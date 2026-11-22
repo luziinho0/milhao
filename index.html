@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>try { if (localStorage.getItem("milhao:tema") === "escuro") document.documentElement.dataset.tema = "escuro"; } catch (e) {}</script>
+<script>try { if (localStorage.getItem("milhao:tema") === "escuro") document.documentElement.dataset.tema = "escuro"; if (sessionStorage.getItem("milhao:abertura")) document.documentElement.classList.add("sem-abertura"); } catch (e) {}</script>
 <title>Milhão.</title>
 <!-- ícone "M." para o atalho na tela inicial do celular (gerado por etl/icones.py) -->
 <meta name="theme-color" content="#13241C">
@@ -18,6 +18,17 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
 <style>
+/* tela de abertura: o "M." se forma, o ponto verde vira cursor e digita "ilhão"; depois aparece o bordão */
+#abertura{position:fixed;inset:0;z-index:9999;background:#13241C;display:flex;align-items:center;justify-content:center;transition:opacity .4s ease,visibility 0s .4s}
+.sem-abertura #abertura{display:none}
+#abertura.saindo{opacity:0;visibility:hidden}
+#abertura .ab-bloco{position:relative;line-height:0;transition:transform .4s cubic-bezier(.4,0,.2,1)}
+#abertura.saindo .ab-bloco{transform:scale(1.04)}
+#abertura svg{width:min(76vw,400px);height:auto;overflow:visible}
+#abertura text{font-family:var(--fonte);font-weight:850;font-stretch:125%;font-variation-settings:"wdth" 125;fill:#fff}
+#abertura .ab-m{fill:#fff;clip-path:inset(100% 0 0 0)}
+#abertura .ab-ponto{fill:#2FCB8F;opacity:0;transform-box:fill-box;transform-origin:50% 100%}
+#abertura .ab-tag{position:absolute;left:50%;top:100%;margin-top:clamp(14px,4vw,22px);transform:translateX(-50%);white-space:nowrap;line-height:1.2;font-family:var(--fonte);font-weight:500;color:#C9D6CF;font-size:clamp(14px,3.9vw,18px);opacity:0}
 :root{
   --verde:#0B6E4F; --verde-2:#0F8A62; --verde-claro:#E3F0EA;
   --tinta:#13241C; --tinta-2:#4A5D53; --tinta-3:#7B8C83;
@@ -569,13 +580,18 @@ details.ajustar .painel{border:none;padding:0}
 .resultado-grande{font-size:34px;font-weight:800;font-stretch:112%;letter-spacing:-.02em;color:var(--verde)}
 
 @media (max-width:980px){
-  .app{grid-template-columns:1fr;background:var(--papel)}
+  .app{grid-template-columns:minmax(0,1fr);background:var(--papel)}
+  .lateral,.principal{min-width:0}
   .lateral{background:var(--branco);border-bottom:1px solid var(--linha)}
   .ativo-cab .preco,.ativo-cab p{text-align:left!important}
   .ativo-cab .acoes{justify-content:flex-start!important}
   .lateral{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center}
   .lateral .rodape{display:none}
-  nav.menu{flex-direction:row;flex-wrap:wrap}
+  /* no celular o menu vira uma fila única que desliza para o lado, em vez de embolar em várias linhas */
+  nav.menu{flex-direction:row;flex-wrap:nowrap;flex:1 0 100%;min-width:0;gap:6px;overflow-x:auto;margin:0 -16px;padding:2px 16px 4px;position:relative;scrollbar-width:none;-webkit-overflow-scrolling:touch;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14px,#000 calc(100% - 30px),transparent);mask-image:linear-gradient(90deg,transparent 0,#000 14px,#000 calc(100% - 30px),transparent)}
+  nav.menu::-webkit-scrollbar{display:none}
+  nav.menu a{flex:none;white-space:nowrap;border:1px solid var(--linha);border-radius:999px;padding:8px 14px 8px 12px}
+  nav.menu a.ativo{border-color:transparent}
   .g-2,.g-ativo,.calc,.entrada{grid-template-columns:1fr}
   .entrada-arte{min-height:300px}
   .conteudo,.topo{padding-left:18px;padding-right:18px}
@@ -759,6 +775,80 @@ body.com-filtrao .filtrao{display:block}
 </style>
 </head>
 <body>
+<div id="abertura" aria-hidden="true"><div class="ab-bloco">
+  <svg id="ab-svg" viewBox="80 132 408 248"><defs><clipPath id="ab-saida"><rect id="ab-janela" x="406" y="0" width="0" height="1000"/></clipPath></defs><g id="ab-tudo"><g clip-path="url(#ab-saida)"><text id="ab-t" y="380">ilhão</text></g><polygon class="ab-m" id="ab-m" points="80,380 80,132 184,132 243,262 302,132 406,132 406,380 330,380 330,244 276,356 210,356 156,244 156,380"/><g id="ab-pg"><rect class="ab-ponto" id="ab-p" x="428" y="312" width="60" height="68" rx="7"/></g></g></svg>
+  <div class="ab-tag" id="ab-tag">Toda a sua carteira, num lugar só.</div>
+</div></div>
+<script>
+(function () {
+  var el = document.getElementById("abertura"), inicio = 0, fechado = false, MIN = 2350;
+  if (!el || document.documentElement.classList.contains("sem-abertura")) { window.__fecharAbertura = function () {}; return; }
+  var calmo = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var q = function (id) { return document.getElementById(id); };
+  function animar(comTexto) {
+    var svg = q("ab-svg"), t = q("ab-t"), m = q("ab-m"), p = q("ab-p"), pg = q("ab-pg"), tudo = q("ab-tudo"), jan = q("ab-janela"), tag = q("ab-tag");
+    if (!m.animate) { comTexto = false; }
+    var opc = function (o) { var r = { fill: "both" }; for (var k in o) r[k] = o[k]; return r; };
+    if (!comTexto) { // sem a fonte a tempo: só o "M." e o bordão
+      t.style.display = "none"; MIN = 1300; svg.style.width = "min(36vw,170px)";
+      if (m.animate) {
+        m.animate([{ clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0 0 0 0)" }], opc({ duration: 500, delay: 50, easing: "cubic-bezier(.2,.8,.2,1)" }));
+        p.animate([{ opacity: 0, transform: "translateY(-176px) scale(.6)" }, { opacity: 1, transform: "none" }], opc({ duration: 400, delay: 350, easing: "cubic-bezier(.3,1.5,.5,1)" }));
+        tag.animate([{ opacity: 0, transform: "translate(-50%,10px)" }, { opacity: 1, transform: "translate(-50%,0)" }], opc({ duration: 450, delay: 700, easing: "ease" }));
+      } else { m.style.clipPath = "none"; p.style.opacity = 1; tag.style.opacity = 1; }
+      return;
+    }
+    var fs = 248 / 0.703, x0 = 431.4, gap = 22;
+    t.setAttribute("font-size", fs); t.style.letterSpacing = (-0.02 * fs) + "px"; t.setAttribute("x", x0);
+    var lg = [0]; for (var k = 1; k <= 5; k++) lg.push(t.getSubStringLength(0, k));
+    var fimDir = x0 + lg[5] + gap + 60, larg = fimDir - 80;
+    svg.setAttribute("viewBox", "80 132 " + larg + " 248");
+    var desloc0 = (80 + larg / 2) - 284, K = 1.5, total = 2400, of = function (s) { return s * 1000 / total; };
+    var T = [0.88, 0.97, 1.08, 1.16, 1.29], pos = lg.map(function (w, k) { return k === 0 ? 0 : x0 + w + gap - 428; });
+    m.animate([{ clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0 0 0 0)" }], opc({ duration: 520, delay: 50, easing: "cubic-bezier(.2,.8,.2,1)" }));
+    p.animate([{ opacity: 0, transform: "translateY(-176px) scale(.6)" }, { opacity: 1, transform: "none" }], opc({ duration: 420, delay: 330, easing: "cubic-bezier(.3,1.5,.5,1)" }));
+    var kJ = [{ offset: 0, width: "0px" }], kP = [{ offset: 0, transform: "translateX(0px)" }];
+    T.forEach(function (s, k) {
+      kJ.push({ offset: of(s) - 0.0001, width: (k === 0 ? 0 : x0 + lg[k] - 406) + "px" }, { offset: of(s), width: (x0 + lg[k + 1] - 406 + 3) + "px" });
+      kP.push({ offset: of(s) - 0.0001, transform: "translateX(" + pos[k] + "px)" }, { offset: of(s) + 0.012, transform: "translateX(" + pos[k + 1] + "px)" });
+    });
+    kJ.push({ offset: 1, width: "5000px" }); kP.push({ offset: 1, transform: "translateX(" + pos[5] + "px)" });
+    jan.animate(kJ, { duration: total, fill: "both" });
+    pg.animate(kP, { duration: total, fill: "both" });
+    pg.animate([{ offset: 0, opacity: 1 }, { offset: of(0.62) - 0.0001, opacity: 1 }, { offset: of(0.62), opacity: 0 }, { offset: of(0.76) - 0.0001, opacity: 0 }, { offset: of(0.76), opacity: 1 }, { offset: 1, opacity: 1 }], { duration: total, fill: "both" });
+    tudo.style.transformOrigin = "284px 256px";
+    tudo.animate([{ offset: 0, transform: "translateX(" + desloc0 + "px) scale(" + K + ")" }, { offset: of(T[0] - 0.02), transform: "translateX(" + desloc0 + "px) scale(" + K + ")", easing: "cubic-bezier(.45,0,.25,1)" }, { offset: of(T[4] + 0.3), transform: "translateX(0px) scale(1)" }, { offset: 1, transform: "translateX(0px) scale(1)" }], { duration: total, fill: "both" });
+    tag.animate([{ opacity: 0, transform: "translate(-50%,10px)" }, { opacity: 1, transform: "translate(-50%,0)" }], opc({ duration: 500, delay: 1600, easing: "cubic-bezier(.2,.8,.2,1)" }));
+  }
+  function comecar(comTexto) {
+    if (inicio || fechado) return;
+    if (calmo) { comTexto = false; }
+    try { animar(comTexto); } catch (e) { q("ab-t").style.display = "none"; q("ab-m").style.clipPath = "none"; q("ab-p").style.opacity = 1; }
+    if (calmo) { document.getAnimations && el.getAnimations({ subtree: true }).forEach(function (a) { a.finish(); }); MIN = 600; }
+    inicio = Date.now();
+  }
+  // espera a fonte da marca (até ~0,7 s) para o texto digitado sair certo; sem ela, faz a versão curta
+  requestAnimationFrame(function () {
+    var limite = setTimeout(function () { comecar(false); }, 700);
+    if (document.fonts && document.fonts.load) document.fonts.load('850 100px "Archivo"', "ilhão").then(function (f) { clearTimeout(limite); comecar(!!(f && f.length)); }, function () { clearTimeout(limite); comecar(false); });
+    else { clearTimeout(limite); comecar(false); }
+  });
+  function sair() {
+    if (fechado) return; fechado = true;
+    el.classList.add("saindo");
+    try { sessionStorage.setItem("milhao:abertura", "1"); } catch (e) {}
+    setTimeout(function () { el.remove(); }, 450);
+  }
+  var pediu = false;
+  function tentar() {
+    if (fechado) return;
+    if (inicio && Date.now() - inicio >= MIN) return sair();
+    setTimeout(tentar, inicio ? Math.max(30, MIN - (Date.now() - inicio)) : 60);
+  }
+  window.__fecharAbertura = function () { if (!pediu) { pediu = true; tentar(); } };
+  setTimeout(sair, 5000); // nunca prende a pessoa se algo demorar
+})();
+</script>
 <div id="raiz"></div>
 <div id="aviso" class="aviso oculto" role="status" aria-live="polite"></div>
 
@@ -1968,7 +2058,7 @@ function telaCarteiras() {
 
 /* ---------- moldura ---------- */
 function moldura(rota) {
-  const c = carteira();
+  const c = carteira(), rolagemMenu = document.querySelector("nav.menu")?.scrollLeft || 0;
   const item = (r, nome) => `<a href="#${r}" class="${rota === r || (r === "explorar" && rota === "ativo") ? "ativo" : ""}">${ICO[r]}${nome}</a>`;
   $("#raiz").innerHTML = `<div class="app">
     <aside class="lateral">
@@ -2003,6 +2093,13 @@ function moldura(rota) {
   $("#exportar").onclick = exportarBackup;
   $("#importar-backup").onclick = () => $("#arquivo-backup").click();
   ligarBusca(); ligarBotaoTema();
+  // menu em fila (celular): mantém onde a pessoa estava e traz a aba aberta para a vista
+  const menu = document.querySelector("nav.menu"), aberta = menu?.querySelector("a.ativo");
+  if (menu && menu.scrollWidth > menu.clientWidth) {
+    menu.scrollLeft = rolagemMenu;
+    if (aberta && (aberta.offsetLeft < menu.scrollLeft + 16 || aberta.offsetLeft + aberta.offsetWidth > menu.scrollLeft + menu.clientWidth - 30))
+      menu.scrollTo({ left: aberta.offsetLeft - (menu.clientWidth - aberta.offsetWidth) / 2, behavior: rolagemMenu ? "smooth" : "auto" });
+  }
 }
 
 function ligarBusca() {
@@ -4972,7 +5069,7 @@ async function iniciar() {
   if (S.recuperando) return telaLogin(curvaEntrada(), "nova");
   render();
 }
-iniciar();
+iniciar().finally(() => window.__fecharAbertura && window.__fecharAbertura());
 </script>
 </body>
 </html>
