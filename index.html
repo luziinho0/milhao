@@ -79,7 +79,8 @@ label.campo{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(
 .entrada-arte::after{content:"";position:absolute;left:0;right:0;bottom:0;height:130px;background:linear-gradient(transparent,var(--tinta) 65%);z-index:1;pointer-events:none}
 /* marca */
 .logo{display:inline-flex;align-items:center;gap:.22em;line-height:1;white-space:nowrap}
-.logo .logo-m{width:1.05em;height:1.05em;flex:none}
+.logo .logo-m{width:1.1em;height:1.1em;flex:none;margin-right:.12em}
+[data-tema=escuro] .logo .lm-fundo{fill:#1C3328}
 .logo-nome{font-weight:850;font-stretch:125%;font-variation-settings:"wdth" 125;letter-spacing:-.025em;color:var(--verde)}
 .logo-nome i{font-style:normal;color:#2FCB8F}
 .logo.grande{font-size:clamp(60px,7.4vw,118px)}
@@ -600,7 +601,7 @@ details.ajustar .painel{border:none;padding:0}
 /* planos, perfil e documentos */
 .plano-ouro .logo-nome{background:linear-gradient(120deg,#A9781C 0%,#E7C45E 38%,#B88A2C 62%,#F2D886 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
 .plano-ouro .logo-nome i{color:transparent}
-.plano-ouro .logo-m g{fill:#D4A537;stroke:#D4A537}
+.plano-ouro .logo-m .lm-letra{fill:#F2D886}.plano-ouro .logo-m .lm-ponto{fill:#D4A537}
 .avatar{width:var(--tam);height:var(--tam);border-radius:50%;object-fit:cover;flex:none;display:inline-flex;align-items:center;justify-content:center;background:var(--verde-claro);color:var(--verde);font-weight:800;font-size:calc(var(--tam) * .38)}
 /* aro da foto: prata no Grátis, ouro no Milhão Ouro */
 .avatar{--aro-sombra:#A9B1B8;box-shadow:0 0 0 2px var(--branco),0 0 0 4px var(--aro-sombra)}
@@ -895,7 +896,7 @@ body.com-filtrao .filtrao{display:block}
   <form method="dialog" id="form-lancamento">
     <h2>Novo lançamento</h2>
     <label class="campo">Ativo
-      <input type="text" name="ticker" list="lista-tickers" required autocomplete="off" placeholder="Ex.: YBRA3">
+      <input type="text" name="ticker" list="lista-tickers" required autocomplete="off" placeholder="Ex.: PETR4">
     </label>
     <div class="linha2">
       <label class="campo">Operação
@@ -1719,13 +1720,9 @@ function render() {
 }
 
 /* ---------- marca: o "M" feito de três candles + o nome ---------- */
-function logoMarca(tam = 64, cor = "#2FCB8F") {
-  return `<svg class="logo-m" viewBox="0 0 64 64" width="${tam}" height="${tam}" aria-hidden="true">
-    <g fill="${cor}" stroke="${cor}" stroke-linecap="round">
-      <line x1="14" y1="9" x2="14" y2="57" stroke-width="3"/><rect x="7" y="17" width="14" height="34" rx="2.5"/>
-      <line x1="32" y1="25" x2="32" y2="52" stroke-width="3"/><rect x="25" y="31" width="14" height="14" rx="2.5"/>
-      <line x1="50" y1="3" x2="50" y2="55" stroke-width="3"/><rect x="43" y="9" width="14" height="40" rx="2.5"/>
-    </g></svg>`;
+function logoMarca(tam = 64) {
+  // o "M." da marca, no mesmo quadrado do ícone do celular (etl/icones.py)
+  return `<svg class="logo-m" viewBox="0 0 512 512" width="${tam}" height="${tam}" aria-hidden="true"><rect class="lm-fundo" width="512" height="512" rx="113" fill="#13241C"/><polygon class="lm-letra" fill="#fff" points="52,380 52,132 156,132 215,262 274,132 378,132 378,380 302,380 302,244 248,356 182,356 128,244 128,380"/><rect class="lm-ponto" x="400" y="312" width="60" height="68" rx="7" fill="#2FCB8F"/></svg>`;
 }
 const logoHTML = (cls = "", comMarca = true) => `<span class="logo ${cls}" role="img" aria-label="Milhão">${comMarca ? logoMarca() : ""}<span class="logo-nome">Milhão<i>.</i></span></span>`;
 
