@@ -521,6 +521,7 @@ def conferir(dados: Path, anterior: str | None, rede: Rede, amostra=AMOSTRA_EXTE
     # ---- dado a dado
     precisa_externo: set[str] = set()
     ruins: set[str] = set()
+    por_externo: set[str] = set()
     for tk, d in detalhes.items():
         if not conferir_serie(tk, d, R, ultimo_pregao):
             ruins.add(tk)
@@ -559,9 +560,13 @@ def conferir(dados: Path, anterior: str | None, rede: Rede, amostra=AMOSTRA_EXTE
             if outro is None:
                 ext["sem_par"] += 1
                 continue
+            k = d["preco"] / outro if outro else 0
+            if any(abs(k / f - 1) < 0.03 for f in (10, 100, 1000, 0.1, 0.01, 0.001)):
+                ext["sem_par"] += 1   # a segunda fonte está em outra unidade (ex.: centavos): não serve para comparar
+                continue
             ext["conferidos"] += 1
             dif = abs(d["preco"] / outro - 1)
-            if dif <= TOLERANCIA_EXTERNA:
+            if dif <= TOLERANCIA_EXTERNA or abs(d["preco"] - outro) <= 0.02 + 1e-9:   # ativos de centavos: 2 centavos de folga
                 ext["bateram"] += 1
                 precisa_externo.discard(tk)
             else:
@@ -570,6 +575,7 @@ def conferir(dados: Path, anterior: str | None, rede: Rede, amostra=AMOSTRA_EXTE
                 R.add(tk, "preco", "segurado",
                       f"fechamento de {dbr(d['data'])} não bateu com a segunda fonte: {brl(d['preco'])} aqui, {brl(outro)} no Yahoo ({pc(dif, 1)})")
                 ruins.add(tk)
+                por_externo.add(tk)
             time.sleep(0.15)
     else:
         ext["indisponivel"] = True
@@ -585,6 +591,14 @@ def conferir(dados: Path, anterior: str | None, rede: Rede, amostra=AMOSTRA_EXTE
         nivel_seg = any(i["nivel"] == "segurado" for i in R.de(tk))
         antigo = rede.json(f"{base_ant}/ativo/{tk}.json") if base_ant and ontem else None
         motivo = next((i["msg"] for i in R.de(tk) if i["nivel"] in ("segurado", "em_conferencia")), "dado em conferência")
+        ant_conf = (antigo or {}).get("conferencia") or {}
+        if (tk in por_externo and ant_conf.get("status") == "segurado" and ant_conf.get("desde")
+                and data_ok(ant_conf["desde"]) and detalhes[tk].get("data")
+                and (dt.date.fromisoformat(detalhes[tk]["data"][:10]) - dt.date.fromisoformat(ant_conf["desde"][:10])).days > 4):
+            # já ficou segurado dias seguidos e a B3 (fonte oficial) segue firme: não congela o ativo, vai com aviso
+            status[tk] = {"status": "em_conferencia", "motivo": motivo, "em": AGORA.isoformat(timespec="minutes")}
+            R.add(tk, "preco", "em_conferencia", "a segunda fonte segue diferente há dias: vale o preço da B3, com aviso")
+            continue
         if antigo and ok(antigo.get("preco")):
             R.itens = [i for i in R.itens if not (i["alvo"] == tk and i["nivel"] in ("corrigido", "ocultado"))]
             antigo["conferencia"] = {"status": "segurado", "motivo": motivo, "desde": antigo.get("data"),
