@@ -47,6 +47,10 @@ jobs:
       - name: Rodar o robô de dados
         run: python etl/milhao_dados.py --saida site/data --cache .cache-dados
 
+      # confere dado a dado antes de publicar; se achar erro em massa, para aqui e o site fica com os dados de ontem
+      - name: Conferir os dados, dado a dado
+        run: python etl/conferencia.py --dados site/data --anterior https://milhao.pages.dev/data
+
       - name: Montar o site
         run: cp index.html site/ && python etl/icones.py --saida site && touch site/.nojekyll
 
