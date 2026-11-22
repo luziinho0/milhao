@@ -681,6 +681,18 @@ details.ajustar .painel{border:none;padding:0}
 .comparar-com select{font:inherit;color:var(--tinta);border:1px solid var(--linha);border-radius:8px;padding:4px 8px;background:var(--branco)}
 .grade-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;margin:16px 0}
 .numeros.dois{grid-template-columns:repeat(2,minmax(0,1fr))}
+/* conferência dos dados */
+.aviso-conf{display:flex;gap:12px;align-items:flex-start;border:1px solid #E9C46A;background:#FFF8E6;color:#5C4510;border-radius:var(--r);padding:12px 16px;margin:0 0 16px;font-size:14px}
+.aviso-conf b{display:block;margin-bottom:2px}
+.aviso-conf a{color:inherit;text-decoration:underline}
+[data-tema=escuro] .aviso-conf{background:#2A2414;border-color:#6B5520;color:#F1DFAE}
+.conf-lista{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.conf-lista li{display:flex;gap:10px;align-items:baseline}
+.conf-lista li > span:first-child{flex:none;min-width:22px;height:22px;border-radius:50%;background:var(--menta,#E3F0EA);color:var(--verde,#0B6E4F);font-weight:700;font-size:12px;display:inline-flex;align-items:center;justify-content:center}
+.conf-nivel{display:inline-block;font-size:12px;font-weight:600;border-radius:999px;padding:2px 8px;background:var(--linha-2);white-space:nowrap}
+.conf-nivel.corrigido{background:#E3F0EA;color:#0B6E4F}.conf-nivel.ocultado{background:#EEF0F2;color:#4A5560}
+.conf-nivel.segurado,.conf-nivel.em_conferencia{background:#FFF1D6;color:#7A5410}.conf-nivel.bloqueio{background:#FCE3DE;color:#9B2C1C}
+[data-tema=escuro] .conf-nivel{background:#22302A;color:#C9D6CF}
 .numeros.dois > div:nth-child(2n){border-right:none}
 .numeros.dois > div:nth-child(-n+2){border-bottom:1px solid var(--linha-2)}
 .grade-2 > .painel{margin:0}
@@ -2070,6 +2082,7 @@ function moldura(rota) {
       <div class="rodape">
         <span>Cotações de fechamento de ${dataBR(S.meta?.ultimo_pregao)}</span>
         <span>Fontes: B3 e CVM</span>
+        <a href="#conferencia" style="color:inherit">${S.meta?.conferencia ? "Dados conferidos em " + dataBR(S.meta.conferencia.feito_em.slice(0, 10)) : "Conferência dos dados"}</a>
         <button class="btn texto" style="padding:0;text-align:left" id="exportar">Exportar backup</button>
         <button class="btn texto" style="padding:0;text-align:left" id="importar-backup">Restaurar backup</button>
       </div>
@@ -3013,6 +3026,7 @@ rotas.ativo = async (el, t) => {
           <a class="btn" href="#comparar-${[d.ticker, ...(d.pares || []).filter((p) => S.porTicker[p]).slice(0, 4)].join(",")}">${ICO.comparar}Comparar com o setor</a>
           <button class="btn primario" id="add">Adicionar à carteira</button></div></div>
     </div>
+    ${avisoConferencia(d)}
     ${pos ? `<p class="sutil" style="margin:-8px 0 16px">Você tem ${qtdF(pos.qtd)} ${classe(d.tipo).unidade} a ${brl(pos.pm)} de preço médio: <b class="${cls(pos.resultado)}">${pct(pos.custo ? pos.resultado / pos.custo : null, 1, true)}</b>.</p>` : ""}
     <div class="abas" role="tablist">${abas.map(([k, n], i) => `<button role="tab" aria-selected="${i === 0}" data-aba="${k}">${n}</button>`).join("")}</div>
     ${abas.map(([k], i) => `<section data-painel="${k}" class="${i ? "oculto" : ""}">${(fii ? PAINEIS_FII : simples ? PAINEIS_MERCADO : PAINEIS_ACAO)[k](d, ind, med)}</section>`).join("")}
@@ -4492,6 +4506,79 @@ rotas.indicadores = async (el) => {
   const prim = $("[data-ind]"); if (prim) desenhar(prim.dataset.ind);
 };
 
+/* ---------- conferência dos dados: o que o robô conferiu, corrigiu ou segurou hoje ---------- */
+function avisoConferencia(d) {
+  const c = d.conferencia;
+  if (!c || !["segurado", "em_conferencia"].includes(c.status)) return "";
+  const titulo = c.status === "segurado" ? `Mostrando o último dado conferido${c.desde ? ", de " + dataBR(c.desde) : ""}` : "Dado em conferência";
+  const texto = c.status === "segurado"
+    ? "O dado de hoje não passou na conferência e só entra no site depois de conferido. " + esc(maiuscula(c.motivo || "")) + "."
+    : esc(maiuscula(c.motivo || "Um dado deste ativo está sendo conferido")) + ". Use com cuidado até a próxima atualização.";
+  return `<div class="aviso-conf" role="note"><span aria-hidden="true">${ICO.alerta || "⚠"}</span><div><b>${titulo}</b>${texto} <a href="#conferencia">Como conferimos os dados</a></div></div>`;
+}
+const nInt = (v) => vazio(v) ? "–" : nf(0).format(v);
+const CONF_NIVEL = { corrigido: "Corrigido", ocultado: "Ocultado", segurado: "Ficou o dado de ontem", em_conferencia: "Em conferência", aviso: "Aviso", bloqueio: "Bloqueio" };
+const CONF_CAMPO = { preco: "Preço", precos: "Série de preços", var_dia: "Variação do dia", var_12m: "Variação em 12 meses", var_30d: "Variação em 30 dias",
+  proventos: "Proventos", dy: "Dividend yield", valor_mercado: "Valor de mercado", acoes: "Quantidade de ações", valuation: "Indicadores de preço",
+  graham: "Preço justo (Graham)", bazin: "Preço teto (Bazin)", vp_cota: "Valor patrimonial da cota", ultimo_rendimento: "Último rendimento",
+  base: "Balanço", data: "Último negócio", arquivo: "Página do ativo", indicadores: "Juros e moedas", ultimo_pregao: "Data dos dados", ativos: "Lista de ativos",
+  pu_compra: "Preço de compra", pu_venda: "Preço de venda", taxa_compra: "Taxa de compra", taxa_venda: "Taxa de venda", yield_1m: "Rendimento 1 mês",
+  yield_3m: "Rendimento 3 meses", yield_6m: "Rendimento 6 meses", yield_12m: "Rendimento 12 meses" };
+const nomeCampoConf = (k) => CONF_CAMPO[k] || (S.meta?.indicadores || []).find((i) => i.chave === k)?.nome || k;
+const alvoConf = (a) => S.porTicker[a] ? `<a href="#ativo-${encodeURIComponent(a)}"><b>${esc(a)}</b></a>`
+  : `<b>${esc(a.startsWith("tesouro:") ? "Tesouro " + a.slice(8) : a === "cripto" ? "Cripto" : a === "geral" ? "Geral" : a === "indicadores" ? "Banco Central" : a)}</b>`;
+rotas.conferencia = async (el) => {
+  el.innerHTML = `<p class="fraco">Carregando…</p>`;
+  let c = null;
+  try { c = await j("data/conferencia.json"); } catch (e) { c = null; }
+  const passos = [
+    ["Preço e histórico", "Cada preço tem que ser positivo e bater com o histórico. Saltos que parecem desdobramento sem ajuste tiram as variações longas do ar."],
+    ["Segunda fonte", "O fechamento dos ativos mais negociados, e de todo ativo que andou demais, é comparado com outra fonte de cotações. Se não bater, o ativo fica com o último dado conferido."],
+    ["Comparação com ontem", "Preço que mudou demais de um dia para o outro só entra se a segunda fonte confirmar."],
+    ["Proventos", "Valor positivo, datas válidas, pagamento depois da data com, nada repetido e nenhum provento maior que o próprio preço."],
+    ["Indicadores", "P/L, P/VP, dividend yield, valor de mercado e preço justo são recalculados e corrigidos se não baterem. Número sem sentido sai do site."],
+    ["Juros, Tesouro e cripto", "Selic, CDI, IPCA e dólar dentro do plausível e comparados com ontem. Bitcoin e Ethereum conferidos com uma corretora brasileira."],
+  ];
+  const como = `<div class="painel"><h2 style="margin-top:0">Como funciona</h2><p class="sutil">Todo dia útil, depois do fechamento da B3, um robô monta os dados do Milhão e, antes de publicar, confere tudo dado a dado. Na dúvida, o site mostra menos, nunca errado. Se algo grave aparece, a publicação para e o site continua com os dados do dia anterior.</p>
+    <ol class="conf-lista">${passos.map(([t, x], i) => `<li><span>${i + 1}</span><div><b>${t}.</b> ${x}</div></li>`).join("")}</ol></div>`;
+  if (!c) {
+    el.innerHTML = `<div class="cabeca"><div><h1>Conferência dos dados</h1></div></div>${como}<div class="painel vazio" style="margin-top:16px"><h3>A primeira conferência ainda vai rodar</h3><p>O relatório aparece aqui depois da próxima atualização dos dados.</p></div>`;
+    return;
+  }
+  const ext = c.segunda_fonte || {};
+  const cartao = (n, v, d = "") => `<div><span>${n}</span><strong>${v}</strong>${d ? `<small class="sutil">${d}</small>` : ""}</div>`;
+  const destaque = [...(c.segurados || []).map((t) => [t, "segurado"]), ...(c.em_conferencia || []).map((t) => [t, "em_conferencia"])];
+  const itens = (c.itens || []).filter((i) => i.nivel !== "aviso" || UI.confAvisos);
+  UI.confFiltro = UI.confFiltro || "todos";
+  const filtros = [["todos", "Tudo"], ["corrigido", "Corrigidos"], ["ocultado", "Ocultados"], ["segurado", "Dado de ontem"], ["em_conferencia", "Em conferência"], ["aviso", "Avisos"]]
+    .filter(([k]) => k === "todos" || (c.itens || []).some((i) => i.nivel === k));
+  el.innerHTML = `<div class="cabeca"><div><h1>Conferência dos dados</h1><p class="sutil" style="margin:6px 0 0">Feita em ${dataBR(c.feito_em.slice(0, 10))} às ${c.feito_em.slice(11, 16)}, com o fechamento de ${dataBR(c.ultimo_pregao)}.</p></div></div>
+    ${c.bloqueado ? `<div class="aviso-conf"><span aria-hidden="true">⚠</span><div><b>A atualização de hoje foi segurada</b>${(c.bloqueios || []).map(esc).join(" ")} O site continua com os dados conferidos do dia anterior.</div></div>` : ""}
+    <div class="numeros">
+      ${cartao("Ativos conferidos", nInt(c.ativos, 0), `${nInt(c.ativos_ok, 0)} sem nenhum ajuste`)}
+      ${cartao("Dados conferidos", nInt(c.campos_conferidos, 0), "preços, proventos e indicadores")}
+      ${cartao("Corrigidos", nInt(c.corrigidos, 0), "recalculados e certos agora")}
+      ${cartao("Tirados do ar", nInt(c.ocultados, 0), "não passaram na conferência")}
+      ${cartao("Segunda fonte", ext.conferidos ? `${nInt(ext.bateram, 0)} de ${nInt(ext.conferidos, 0)}` : "–", ext.conferidos ? "preços bateram" : "indisponível hoje")}
+    </div>
+    ${destaque.length ? `<div class="painel" style="margin-top:16px"><h2 style="margin-top:0">Ativos com aviso hoje</h2><ul class="conf-lista">${destaque.map(([t, n]) => {
+      const m = (c.itens || []).find((i) => i.alvo === t && (i.nivel === n || i.nivel === "segurado" || i.nivel === "em_conferencia"));
+      return `<li><span class="conf-nivel ${n}">${CONF_NIVEL[n]}</span><div>${alvoConf(t)}: ${esc(m?.msg || "")}</div></li>`; }).join("")}</ul></div>` : ""}
+    <div style="margin-top:16px">${como}</div>
+    <div class="painel" style="margin-top:16px"><div class="cabeca" style="margin-bottom:10px"><h2 style="margin:0">Tudo o que foi ajustado hoje</h2>
+      <div class="chips" style="margin:0">${filtros.map(([k, n]) => `<button class="chip" data-cf="${k}" aria-pressed="${UI.confFiltro === k}">${n}</button>`).join("")}</div></div>
+      <div id="conf-tab"></div></div>
+    <p class="fraco" style="margin-top:14px">Achou algum dado errado mesmo assim? <a href="#reclame">Conte para a gente no Reclame aqui</a>.</p>`;
+  const tabela = () => {
+    const lista = (c.itens || []).filter((i) => UI.confFiltro === "todos" ? i.nivel !== "aviso" : i.nivel === UI.confFiltro).slice(0, 400);
+    $("#conf-tab").innerHTML = lista.length ? `<div style="overflow:auto"><table><thead><tr><th class="esq">Onde</th><th class="esq">Dado</th><th class="esq">O que houve</th></tr></thead><tbody>${lista.map((i) =>
+      `<tr><td class="esq">${alvoConf(i.alvo)}</td><td class="esq">${esc(nomeCampoConf(i.campo))}</td><td class="esq"><span class="conf-nivel ${i.nivel}">${CONF_NIVEL[i.nivel]}</span> ${esc(i.msg)}</td></tr>`).join("")}</tbody></table></div>`
+      : `<p class="sutil" style="margin:0">Nada por aqui hoje.</p>`;
+  };
+  $$("[data-cf]").forEach((b) => b.onclick = () => { UI.confFiltro = b.dataset.cf; $$("[data-cf]").forEach((x) => x.setAttribute("aria-pressed", x === b)); tabela(); });
+  tabela();
+};
+
 /* ---------- referência para a evolução da carteira: o mesmo dinheiro aplicado no CDI ou num índice ---------- */
 async function serieReferencia(qual) {
   if (qual === "cdi") {
@@ -4837,7 +4924,7 @@ const DESENVOLVEDORA = "PontoClique";
 const rodapeSite = () => `<footer class="rodape-site">
     <div><strong>Quem faz o Milhão</strong><p>O Milhão foi desenvolvido pela <b>${DESENVOLVEDORA}</b>, empresa de ${esc(VENDEDOR.nome || "Luiz Henrique Santos Barboza")}.${VENDEDOR.email ? ` Fale com a gente: <a href="mailto:${esc(VENDEDOR.email)}">${esc(VENDEDOR.email)}</a>.` : ""}</p></div>
     <div><strong>Ambiente seguro</strong><p>A conexão é criptografada (HTTPS) e cada conta só acessa os próprios dados, protegidos por regras no banco de dados. Os pagamentos, no cartão ou no Pix, são feitos pelo Mercado Pago: o Milhão não vê nem guarda dados do seu cartão ou do seu banco.</p></div>
-    <div><strong>Diretrizes</strong><p>Cotações de fechamento da B3 e dados públicos da CVM, atualizados todo dia útil. Preço justo, indicadores e o Filtrão são ferramentas de estudo, não recomendação de investimento: a decisão é sempre sua.</p></div>
+    <div><strong>Diretrizes</strong><p>Cotações de fechamento da B3 e dados públicos da CVM, atualizados todo dia útil. Antes de ir para o site, cada dado passa por uma <a href="#conferencia">conferência automática</a>. Preço justo, indicadores e o Filtrão são ferramentas de estudo, não recomendação de investimento: a decisão é sempre sua.</p></div>
     <div class="rodape-base"><span>© ${new Date().getFullYear()} Milhão. Desenvolvido pela ${DESENVOLVEDORA}.</span><nav aria-label="Documentos"><a href="#termos">Termos de uso</a><a href="#privacidade">Política de privacidade</a></nav></div>
   </footer>`;
 
