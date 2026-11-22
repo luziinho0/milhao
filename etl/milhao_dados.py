@@ -417,6 +417,7 @@ def serie_preco(df_t: pd.DataFrame, eventos_isin: list) -> list[list]:
             s.loc[s.index <= pd.Timestamp(d)] = s.loc[s.index <= pd.Timestamp(d)] / f
     corte = s.index.max() - pd.Timedelta(days=370)
     antigo = s[s.index < corte].resample("W-FRI").last().dropna()
+    antigo = antigo[antigo.index < corte]   # a última semana leva a data da sexta e repetiria um dia da parte diária
     s = pd.concat([antigo, s[s.index >= corte]])
     return [[d.strftime("%Y-%m-%d"), round(v, 2)] for d, v in s.items()]
 
