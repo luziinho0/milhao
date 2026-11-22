@@ -681,6 +681,33 @@ details.ajustar .painel{border:none;padding:0}
 .comparar-com select{font:inherit;color:var(--tinta);border:1px solid var(--linha);border-radius:8px;padding:4px 8px;background:var(--branco)}
 .grade-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;margin:16px 0}
 .numeros.dois{grid-template-columns:repeat(2,minmax(0,1fr))}
+/* reclame aqui */
+.rec-grade{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:900px){.rec-grade{grid-template-columns:1fr}}
+.rec-form{display:grid;gap:14px}
+.rec-form textarea{width:100%;min-height:130px;resize:vertical;font:inherit;font-size:15px;line-height:1.45;color:var(--tinta);border:1px solid var(--linha);border-radius:8px;padding:10px 12px;background:var(--branco)}
+.rec-form .linha2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:600px){.rec-form .linha2{grid-template-columns:1fr}}
+.rec-tipos{display:flex;flex-wrap:wrap;gap:6px}
+.rec-tipos input{position:absolute;opacity:0;pointer-events:none}
+.rec-tipos label{border:1px solid var(--linha);background:var(--branco);border-radius:999px;padding:7px 13px;cursor:pointer;font-size:14px;font-weight:550}
+.rec-tipos label:has(input:checked){border-color:var(--verde);background:#E3F0EA;color:var(--verde)}
+[data-tema=escuro] .rec-tipos label:has(input:checked){background:#16301F;color:#9FE0BF}
+.rec-tipos label:has(input:focus-visible){outline:2px solid var(--verde);outline-offset:2px}
+.rec-print{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px;color:var(--tinta-2)}
+.rec-print img{width:64px;height:44px;object-fit:cover;border-radius:6px;border:1px solid var(--linha);vertical-align:middle}
+.rec-cont{font-size:12px;color:var(--tinta-3);text-align:right;margin-top:-8px}
+.rec-item{border:1px solid var(--linha);border-radius:var(--r);padding:12px 14px;background:var(--branco);display:grid;gap:6px}
+.rec-item + .rec-item{margin-top:10px}
+.rec-item .rec-topo{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;color:var(--tinta-2)}
+.rec-item p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.rec-resp{border-left:3px solid var(--verde);background:var(--papel);padding:8px 10px;border-radius:0 8px 8px 0;font-size:14px}
+.rec-st{font-size:12px;font-weight:650;border-radius:999px;padding:2px 9px;background:#FFF1D6;color:#7A5410}
+.rec-st.vendo{background:#E6EEFB;color:#2C4C86}.rec-st.resolvida{background:#E3F0EA;color:#0B6E4F}
+[data-tema=escuro] .rec-st{background:#2A2414;color:#F1DFAE}[data-tema=escuro] .rec-st.resolvida{background:#16301F;color:#9FE0BF}[data-tema=escuro] .rec-st.vendo{background:#1B2638;color:#AFC6EE}
+.rec-dono textarea{width:100%;min-height:70px;font:inherit;font-size:14px;border:1px solid var(--linha);border-radius:8px;padding:8px 10px;background:var(--branco);color:var(--tinta)}
+.rec-feito{text-align:center;padding:26px 18px}
+.rec-feito strong{display:block;font-size:22px;margin:6px 0}
 /* conferência dos dados */
 .aviso-conf{display:flex;gap:12px;align-items:flex-start;border:1px solid #E9C46A;background:#FFF8E6;color:#5C4510;border-radius:var(--r);padding:12px 16px;margin:0 0 16px;font-size:14px}
 .aviso-conf b{display:block;margin-bottom:2px}
@@ -1653,6 +1680,7 @@ const ICO = {
   metas: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>',
   imposto: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>',
   perfil: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4s6.3 1.8 7.5 5.4"/></svg>',
+  reclame: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M12 8.5v3.2M12 13.9v.1"/></svg>',
   carteira: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M16 13h2M3 10h18M7 6V4h10v2"/></svg>',
   proventos: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M14.5 9.5c-.5-1-1.5-1.5-2.5-1.5-1.4 0-2.5.8-2.5 2s1.1 1.7 2.5 2 2.5.8 2.5 2-1.1 2-2.5 2c-1 0-2-.5-2.5-1.5M12 6.5V8M12 16v1.5"/></svg>',
   explorar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>',
@@ -1683,6 +1711,7 @@ function render() {
   if (rota === "termos" || rota === "privacidade") { document.body.classList.remove("com-filtrao"); return telaDocumento(rota); }
   if (!S.estado.perfil) return telaEntrada();
   if (!rota || rota === "carteiras" || !carteira() && rota === "carteira") return telaCarteiras();
+  if (rota !== "reclame") S.rotaAnterior = h || rota;
   moldura(rota);
   const alvo = $("#conteudo");
   (rotas[rota] || rotas.carteira)(alvo, ...args.map(decodeURIComponent));
@@ -2077,7 +2106,7 @@ function moldura(rota) {
       <a href="#carteiras" class="marca-link" aria-label="Milhão, voltar para a tela inicial">${logoHTML("pequena")}</a>
       <button class="carteira-atual" id="trocar-carteira"><small>Carteira</small><strong>${esc(c?.nome || "Escolher")}</strong></button>
       <nav class="menu" aria-label="Principal">
-        ${item("carteira", "Carteira")}${item("consolidador", "Consolidador")}${item("analise", "Análise")}${item("proventos", "Proventos")}${item("metas", "Metas")}${item("agenda", "Agenda de dividendos")}${item("explorar", "Ativos da bolsa")}${item("comparar", "Comparar")}${item("indicadores", "Indicadores")}${item("ferramentas", "Ferramentas")}${item("imposto", "Imposto de Renda")}${item("perfil", "Perfil")}
+        ${item("carteira", "Carteira")}${item("consolidador", "Consolidador")}${item("analise", "Análise")}${item("proventos", "Proventos")}${item("metas", "Metas")}${item("agenda", "Agenda de dividendos")}${item("explorar", "Ativos da bolsa")}${item("comparar", "Comparar")}${item("indicadores", "Indicadores")}${item("ferramentas", "Ferramentas")}${item("imposto", "Imposto de Renda")}${item("reclame", "Reclame aqui")}${item("perfil", "Perfil")}
       </nav>
       <div class="rodape">
         <span>Cotações de fechamento de ${dataBR(S.meta?.ultimo_pregao)}</span>
@@ -3030,7 +3059,7 @@ rotas.ativo = async (el, t) => {
     ${pos ? `<p class="sutil" style="margin:-8px 0 16px">Você tem ${qtdF(pos.qtd)} ${classe(d.tipo).unidade} a ${brl(pos.pm)} de preço médio: <b class="${cls(pos.resultado)}">${pct(pos.custo ? pos.resultado / pos.custo : null, 1, true)}</b>.</p>` : ""}
     <div class="abas" role="tablist">${abas.map(([k, n], i) => `<button role="tab" aria-selected="${i === 0}" data-aba="${k}">${n}</button>`).join("")}</div>
     ${abas.map(([k], i) => `<section data-painel="${k}" class="${i ? "oculto" : ""}">${(fii ? PAINEIS_FII : simples ? PAINEIS_MERCADO : PAINEIS_ACAO)[k](d, ind, med)}</section>`).join("")}
-    <p class="fraco" style="margin-top:18px">Calculado pelo Milhão com ${simples ? "" : `dados da CVM${d.base?.referencia ? " até " + dataBR(d.base.referencia) : ""} e `}cotações da B3. Não é recomendação de investimento.</p>`;
+    <p class="fraco" style="margin-top:18px">Calculado pelo Milhão com ${simples ? "" : `dados da CVM${d.base?.referencia ? " até " + dataBR(d.base.referencia) : ""} e `}cotações da B3. Não é recomendação de investimento. Viu algo estranho neste ativo? <a href="#reclame-dado-${encodeURIComponent(d.ticker)}">Avise a gente</a>.</p>`;
   $("#add").onclick = () => abrirLancamento(d.ticker);
   $("#fav").onclick = (e) => {
     const agora = alternarFavorito(d.ticker), b = e.currentTarget;
@@ -4504,6 +4533,139 @@ rotas.indicadores = async (el) => {
   };
   $$("[data-ind]").forEach((b) => b.onclick = () => { $$("[data-ind]").forEach((x) => x.setAttribute("aria-pressed", x === b)); desenhar(b.dataset.ind); });
   const prim = $("[data-ind]"); if (prim) desenhar(prim.dataset.ind);
+};
+
+/* ---------- Reclame aqui: o cliente avisa de erro, dado estranho, pagamento ou dá ideia ---------- */
+const REC_TIPOS = [["bug", "Algo não funciona"], ["dado", "Dado errado"], ["pagamento", "Pagamento ou plano"], ["sugestao", "Sugestão"], ["outro", "Outro"]];
+const REC_DICA = { bug: "Conte o que você fez e o que aconteceu. Ex.: cliquei em Importar da B3, escolhi o arquivo e a tela ficou em branco.",
+  dado: "Qual dado está errado e qual seria o certo? Ex.: o dividend yield de PETR4 aparece 2%, mas pelos proventos dá uns 12%.",
+  pagamento: "Conte o que aconteceu com o pagamento ou o plano. Não escreva número de cartão nem senha.",
+  sugestao: "O que faria o Milhão ficar melhor para você?", outro: "Escreva com as suas palavras." };
+const REC_ST = { aberta: "Aberta", vendo: "Em análise", resolvida: "Resolvida" };
+const REC_ONDE = [["", "Escolha"], ["carteiras", "Tela inicial"], ["carteira", "Carteira"], ["consolidador", "Consolidador"], ["analise", "Análise"], ["proventos", "Proventos"],
+  ["metas", "Metas"], ["agenda", "Agenda de dividendos"], ["explorar", "Ativos da bolsa"], ["ativo", "Página de um ativo"], ["comparar", "Comparar"],
+  ["indicadores", "Indicadores"], ["ferramentas", "Ferramentas"], ["imposto", "Imposto de Renda"], ["perfil", "Perfil e plano"], ["entrar", "Entrar ou criar conta"], ["outro", "Outro lugar"]];
+const ehCriadorMilhao = () => S.plano?.status === "criador";
+async function printReclamacao(arq) {
+  const img = await createImageBitmap(arq), k = Math.min(1, 1600 / Math.max(img.width, img.height));
+  const cv = document.createElement("canvas"); cv.width = Math.round(img.width * k); cv.height = Math.round(img.height * k);
+  cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
+  return new Promise((ok) => cv.toBlob(ok, "image/jpeg", 0.8));
+}
+const itemReclamacao = (r, dono = false) => `<article class="rec-item" data-rec="${esc(r.id)}">
+    <div class="rec-topo"><b>#${esc(r.protocolo || "")}</b><span>${new Date(r.criado_em).toLocaleDateString("pt-BR")}</span><span>${esc((REC_TIPOS.find((t) => t[0] === r.tipo) || [0, r.tipo])[1])}</span>
+      ${r.ativo ? `<span>${esc(r.ativo)}</span>` : ""}<span class="rec-st ${esc(r.status)}">${REC_ST[r.status] || esc(r.status)}</span></div>
+    <p>${esc(r.mensagem)}</p>
+    ${dono ? `<small class="fraco">${esc([REC_ONDE.find((o) => o[0] === r.pagina)?.[1] || r.pagina, r.contato, r.navegador].filter(Boolean).join(" · "))}</small>` : ""}
+    ${r.print ? `<button class="btn texto" style="justify-self:start;padding:0" data-print="${esc(r.print)}">Ver o print</button>` : ""}
+    ${r.resposta && !dono ? `<div class="rec-resp"><b>Resposta do Milhão${r.respondido_em ? ", " + new Date(r.respondido_em).toLocaleDateString("pt-BR") : ""}</b><p>${esc(r.resposta)}</p></div>` : ""}
+    ${dono ? `<div class="rec-dono" style="display:grid;gap:8px"><textarea data-resp placeholder="Resposta para a pessoa (aparece na conta dela)">${esc(r.resposta || "")}</textarea>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><select data-st style="width:auto">${Object.entries(REC_ST).map(([k, n]) => `<option value="${k}"${r.status === k ? " selected" : ""}>${n}</option>`).join("")}</select>
+      <button class="btn primario" data-salvar>Salvar</button></div></div>` : ""}
+  </article>`;
+rotas.reclame = async (el, arg = "") => {
+  const [tipoIni, ativoIni] = String(arg || "").split("-");
+  const veio = String(S.rotaAnterior || "").split("-")[0];
+  const ondeIni = ativoIni ? "ativo" : REC_ONDE.some((o) => o[0] === veio) ? veio : "";
+  const tipo0 = REC_TIPOS.some((t) => t[0] === tipoIni) ? tipoIni : "bug";
+  const contato0 = S.usuario?.email || "";
+  el.innerHTML = `<div class="cabeca"><div><h1>Reclame aqui</h1><p class="sutil" style="margin:6px 0 0">Achou um erro, um dado estranho ou tem uma ideia? Conte para a gente. Cada mensagem é lida pelo criador do Milhão, e a resposta aparece aqui mesmo.</p></div></div>
+    <div class="rec-grade">
+      <section class="painel" id="rec-caixa"><form class="rec-form" id="rec-form" novalidate>
+        <fieldset style="border:0;padding:0;margin:0"><legend class="sutil" style="font-size:13px;font-weight:550;margin-bottom:6px">Sobre o quê?</legend>
+          <div class="rec-tipos">${REC_TIPOS.map(([k, n]) => `<label><input type="radio" name="tipo" value="${k}"${k === tipo0 ? " checked" : ""}><span>${n}</span></label>`).join("")}</div></fieldset>
+        <div class="linha2">
+          <label class="campo">Onde aconteceu<select name="pagina">${REC_ONDE.map(([k, n]) => `<option value="${k}"${k === ondeIni ? " selected" : ""}>${n}</option>`).join("")}</select></label>
+          <label class="campo">Ativo, se for sobre um<input type="text" name="ativo" maxlength="12" autocomplete="off" placeholder="Ex.: PETR4" value="${esc(decodeURIComponent(ativoIni || ""))}"></label>
+        </div>
+        <label class="campo">O que aconteceu<textarea name="mensagem" maxlength="4000" required placeholder="${esc(REC_DICA[tipo0])}"></textarea></label>
+        <div class="rec-cont" id="rec-cont">0 de 4000</div>
+        <div class="rec-print"><label class="btn" style="cursor:pointer">Anexar um print<input type="file" accept="image/*" id="rec-arquivo" hidden></label><span id="rec-print-info">Opcional, ajuda muito a achar o problema.</span></div>
+        <label class="campo">E-mail para a gente te responder<input type="email" name="contato" maxlength="160" value="${esc(contato0)}" placeholder="seu@email.com"></label>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn primario" type="submit" id="rec-enviar">Enviar</button>
+          <small class="fraco">Nunca escreva senha nem número de cartão aqui.</small></div>
+      </form></section>
+      <section class="painel" style="margin-top:0"><h2 style="margin-top:0">Minhas reclamações</h2><div id="rec-minhas"><p class="fraco">Carregando…</p></div></section>
+    </div>
+    <section class="painel oculto" id="rec-painel-dono" style="margin-top:16px"><div class="cabeca" style="margin-bottom:10px"><h2 style="margin:0">Todas as reclamações</h2>
+      <div class="chips" style="margin:0">${[["aberta", "Abertas"], ["vendo", "Em análise"], ["resolvida", "Resolvidas"], ["todas", "Todas"]].map(([k, n], i) => `<button class="chip" data-rf="${k}" aria-pressed="${i === 0}">${n}</button>`).join("")}</div></div>
+      <div id="rec-todas"></div></section>`;
+  const f = $("#rec-form"), msg = f.mensagem;
+  let print = null;
+  f.querySelectorAll("input[name=tipo]").forEach((r) => r.onchange = () => { msg.placeholder = REC_DICA[r.value]; if (r.value === "dado" && !f.pagina.value) f.pagina.value = "ativo"; });
+  msg.oninput = () => { $("#rec-cont").textContent = `${msg.value.length} de 4000`; };
+  $("#rec-arquivo").onchange = async (e) => {
+    const arq = e.target.files[0]; if (!arq) return;
+    if (arq.size > 20e6) { aviso("Esse arquivo é grande demais. Escolha uma imagem de até 20 MB."); return; }
+    try {
+      print = await printReclamacao(arq);
+      $("#rec-print-info").innerHTML = `<img alt="" src="${URL.createObjectURL(print)}"> ${esc(arq.name)} <button type="button" class="btn texto" id="rec-print-tirar">Tirar</button>`;
+      $("#rec-print-tirar").onclick = () => { print = null; $("#rec-arquivo").value = ""; $("#rec-print-info").textContent = "Opcional, ajuda muito a achar o problema."; };
+    } catch (err) { aviso("Não deu para ler essa imagem. Tente outra."); }
+  };
+  f.onsubmit = async (e) => {
+    e.preventDefault();
+    const dados = { tipo: f.tipo.value, pagina: f.pagina.value || null, ativo: f.ativo.value.trim().toUpperCase() || null,
+      mensagem: msg.value.trim(), contato: f.contato.value.trim() || null, navegador: navigator.userAgent.slice(0, 300) };
+    if (dados.mensagem.length < 5) { aviso("Escreva um pouco mais sobre o que aconteceu."); msg.focus(); return; }
+    if (/\b(?:\d[ -]?){13,19}\b/.test(dados.mensagem)) { aviso("Parece que tem um número de cartão na mensagem. Tire antes de enviar."); msg.focus(); return; }
+    if (!S.nuvem || !S.usuario) {
+      if (!VENDEDOR.email) { aviso("Entre na sua conta para enviar."); return; }
+      location.href = `mailto:${VENDEDOR.email}?subject=${encodeURIComponent("Reclame aqui: " + (REC_TIPOS.find((t) => t[0] === dados.tipo) || [])[1])}&body=${encodeURIComponent(dados.mensagem + (dados.ativo ? "\n\nAtivo: " + dados.ativo : ""))}`;
+      return;
+    }
+    const b = $("#rec-enviar"); b.disabled = true; b.textContent = "Enviando…";
+    try {
+      if (print) {
+        const caminho = `${S.usuario.id}/${Date.now()}.jpg`;
+        const { error } = await S.nuvem.storage.from("reclamacoes").upload(caminho, print, { contentType: "image/jpeg" });
+        if (!error) dados.print = caminho;
+      }
+      const { data, error } = await S.nuvem.from("reclamacoes").insert(dados).select("protocolo").single();
+      if (error) throw error;
+      $("#rec-caixa").innerHTML = `<div class="rec-feito"><span class="sutil">Recebemos a sua mensagem</span><strong>Protocolo #${esc(data.protocolo)}</strong>
+        <p class="sutil" style="max-width:420px;margin:0 auto 14px">Ela vai ser lida pelo criador do Milhão. A resposta aparece em "Minhas reclamações".</p>
+        <button class="btn" id="rec-outra">Enviar outra</button></div>`;
+      $("#rec-outra").onclick = () => rotas.reclame(el, "");
+      carregarMinhas();
+    } catch (err) {
+      console.warn(err);
+      aviso(String(err?.message || "").includes("limite_diario") ? "Você já mandou 10 mensagens hoje. Tente de novo amanhã." : "Não deu para enviar agora. Tente de novo em instantes.");
+      b.disabled = false; b.textContent = "Enviar";
+    }
+  };
+  const ligarPrints = (raiz) => raiz.querySelectorAll("[data-print]").forEach((bt) => bt.onclick = async () => {
+    const { data } = await S.nuvem.storage.from("reclamacoes").createSignedUrl(bt.dataset.print, 600);
+    if (data?.signedUrl) window.open(data.signedUrl, "_blank", "noopener");
+  });
+  async function carregarMinhas() {
+    const box = $("#rec-minhas"); if (!box) return;
+    if (!S.nuvem || !S.usuario) { box.innerHTML = `<p class="sutil" style="margin:0">Entre na sua conta para acompanhar as respostas.</p>`; return; }
+    const { data, error } = await S.nuvem.from("reclamacoes").select("*").eq("user_id", S.usuario.id).order("criado_em", { ascending: false }).limit(30);
+    if (error) { box.innerHTML = `<p class="sutil" style="margin:0">Não deu para carregar agora.</p>`; return; }
+    box.innerHTML = data.length ? data.map((r) => itemReclamacao(r)).join("") : `<p class="sutil" style="margin:0">Você ainda não mandou nenhuma. Quando mandar, ela aparece aqui com a resposta.</p>`;
+    ligarPrints(box);
+  }
+  carregarMinhas();
+  if (S.nuvem && S.usuario && ehCriadorMilhao()) {
+    $("#rec-painel-dono").classList.remove("oculto");
+    let filtro = "aberta";
+    const carregarTodas = async () => {
+      let q = S.nuvem.from("reclamacoes").select("*").order("criado_em", { ascending: false }).limit(200);
+      if (filtro !== "todas") q = q.eq("status", filtro);
+      const { data, error } = await q, box = $("#rec-todas");
+      if (error) { box.innerHTML = `<p class="sutil">Não deu para carregar.</p>`; return; }
+      box.innerHTML = data.length ? data.map((r) => itemReclamacao(r, true)).join("") : `<p class="sutil" style="margin:0">Nenhuma por aqui.</p>`;
+      ligarPrints(box);
+      box.querySelectorAll("[data-salvar]").forEach((bt) => bt.onclick = async () => {
+        const art = bt.closest("[data-rec]"), resposta = art.querySelector("[data-resp]").value.trim(), status = art.querySelector("[data-st]").value;
+        const { error } = await S.nuvem.from("reclamacoes").update({ resposta: resposta || null, status, respondido_em: resposta ? new Date().toISOString() : null }).eq("id", art.dataset.rec);
+        aviso(error ? "Não deu para salvar." : "Resposta salva."); if (!error) carregarTodas();
+      });
+    };
+    $$("[data-rf]").forEach((bt) => bt.onclick = () => { filtro = bt.dataset.rf; $$("[data-rf]").forEach((x) => x.setAttribute("aria-pressed", x === bt)); carregarTodas(); });
+    carregarTodas();
+  }
 };
 
 /* ---------- conferência dos dados: o que o robô conferiu, corrigiu ou segurou hoje ---------- */
