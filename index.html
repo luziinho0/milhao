@@ -5267,6 +5267,7 @@ function rentabilidade(ev, c, provs) {
     if ((l.tipo !== "C" && l.tipo !== "V") || !ok.has(l.ticker)) continue;
     // compra antes do primeiro preço conhecido conta no dia em que o ativo passa a ter preço
     const dia = ev.inicio?.[l.ticker] > l.data ? ev.inicio[l.ticker] : l.data;
+    if (dia > datas.at(-1)) continue;   // depois do último pregão com preço: ainda não está no patrimônio
     const preco = l.evento === "Ajuste pela posição da B3" ? (precoAtual(l.ticker) ?? l.preco) : l.preco;
     fluxo[naData(dia)] += (l.tipo === "C" ? 1 : -1) * l.qtd * (preco || 0);
   }
