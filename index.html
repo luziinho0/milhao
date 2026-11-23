@@ -76,7 +76,7 @@ label.campo{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(
 /* ---------- entrada ---------- */
 .entrada{min-height:100vh;display:grid;grid-template-columns:1.1fr 1fr}
 .entrada-arte{background:var(--tinta);color:#fff;padding:56px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;isolation:isolate}
-.entrada-arte p{max-width:420px;color:#C9D6CF;font-size:17px;position:relative;margin:0;z-index:2}
+.entrada-arte p{max-width:440px;color:#DCE8E2;font-size:20px;line-height:1.45;position:relative;margin:0;z-index:2}
 .entrada-arte::after{content:"";position:absolute;left:0;right:0;bottom:0;height:130px;background:linear-gradient(transparent,var(--tinta) 65%);z-index:1;pointer-events:none}
 /* marca */
 .logo{display:inline-flex;align-items:center;gap:.22em;line-height:1;white-space:nowrap}
@@ -98,11 +98,11 @@ label.campo{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(
 .lupa-conteudo{position:absolute;left:0;top:0;transform-origin:0 0;padding:6px}
 .lupa-area.com-lupa .lupa{opacity:1;scale:1}
 /* velas */
-.velas{position:absolute;left:0;right:0;bottom:118px;width:100%;height:230px;z-index:1}
+.velas{position:absolute;left:0;right:0;bottom:118px;width:100%;height:170px;z-index:1;opacity:.5;-webkit-mask-image:linear-gradient(90deg,transparent,#000 35%);mask-image:linear-gradient(90deg,transparent,#000 35%)}
 .velas .vela{transform-box:fill-box;transform-origin:50% 100%;animation:vela-sobe .5s cubic-bezier(.2,.8,.3,1) both;animation-delay:calc(var(--i) * 22ms)}
 @keyframes vela-sobe{from{opacity:0;transform:scaleY(.2)}to{opacity:1;transform:none}}
 /* telão de cotações ao fundo */
-.telao{position:absolute;inset:-25% -20%;z-index:0;opacity:.17;transform:perspective(1100px) rotateX(24deg) rotateZ(-9deg);
+.telao{position:absolute;inset:-25% -20%;z-index:0;opacity:.07;transform:perspective(1100px) rotateX(24deg) rotateZ(-9deg);
   -webkit-mask-image:radial-gradient(ellipse at 50% 45%,#000 30%,transparent 72%);mask-image:radial-gradient(ellipse at 50% 45%,#000 30%,transparent 72%);pointer-events:none}
 .telao-rolo{animation:telao-rola 90s linear infinite}
 .telao-grade{display:grid;grid-template-columns:repeat(8,1fr);gap:2px;padding-bottom:2px}
@@ -114,13 +114,29 @@ label.campo{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(
 @keyframes telao-rola{to{transform:translateY(-50%)}}
 @media (prefers-reduced-motion:reduce){.telao-rolo,.velas .vela{animation:none}.lupa{transition:none}}
 @media (hover:none){.lupa{display:none}.lupa-area{cursor:auto}}
-.entrada-form{display:flex;align-items:center;justify-content:center;padding:28px}
-.entrada-form form{width:100%;max-width:360px;display:flex;flex-direction:column;gap:11px}
-.entrada-form h1{margin-bottom:4px}
-.entrada-form label.campo{gap:3px}
-.entrada-form .nota{font-size:13px;color:var(--tinta-3)}
-.entrada-form .esqueci{font-size:14px;color:var(--verde);font-weight:600;margin-top:-6px;align-self:flex-start}
+.entrada-form{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:40px 28px;
+  background:radial-gradient(ellipse 70% 50% at 85% 0%,rgba(15,138,98,.10),transparent 70%),var(--papel)}
+.entrada-form form{width:100%;max-width:400px;display:flex;flex-direction:column;gap:14px;background:var(--branco);border:1px solid var(--linha);
+  border-radius:20px;padding:34px 32px;box-shadow:0 24px 60px -32px rgba(19,36,28,.35)}
+.entrada-form h1{font-size:28px;margin:4px 0 0}
+.entrada-form .boas-vindas{margin:-8px 0 4px;color:var(--tinta-2);font-size:15px}
+.entrada-form label.campo{gap:6px;font-size:13.5px}
+.entrada-form label.campo input{height:48px;border-radius:12px;padding:0 14px;font-size:16px;transition:border-color .15s,box-shadow .15s}
+.entrada-form label.campo input:focus{outline:none;border-color:var(--verde);box-shadow:0 0 0 4px rgba(15,138,98,.16)}
+.entrada-form .senha-caixa{position:relative;display:block}
+.entrada-form .senha-caixa input{width:100%;padding-right:84px}
+.entrada-form .ver-senha{position:absolute;right:6px;top:50%;translate:0 -50%;border:0;background:none;color:var(--verde);font-weight:650;font-size:13.5px;padding:8px 10px;border-radius:8px;cursor:pointer}
+.entrada-form .ver-senha:hover{background:var(--verde-claro)}
+.entrada-form button[type=submit]{height:50px;border-radius:12px;font-size:16px;font-weight:700;margin-top:4px}
+.entrada-form .alternar{display:grid;grid-template-columns:1fr 1fr;background:var(--papel);border:1px solid var(--linha-2);border-radius:12px;padding:4px;gap:4px}
+.entrada-form .alternar a{text-align:center;padding:9px 6px;border-radius:9px;font-weight:650;font-size:14.5px;color:var(--tinta-2);text-decoration:none}
+.entrada-form .alternar a[aria-current]{background:var(--branco);color:var(--tinta);box-shadow:0 1px 3px rgba(19,36,28,.14)}
+.entrada-form .nota{font-size:13px;color:var(--tinta-3);margin:0}
+.entrada-form .esqueci{font-size:14px;color:var(--verde);font-weight:600;margin-top:-6px;align-self:flex-end}
 .entrada-form .sutil a{color:var(--verde);font-weight:600}
+.entrada-rodape{width:100%;max-width:400px;display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center}
+.entrada-rodape .nota{font-size:13px;color:var(--tinta-3);margin:0}
+.entrada-rodape .links-legais{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
 .erro-login{margin:0;background:var(--queda-claro);color:var(--queda);border-radius:8px;padding:10px 12px;font-size:14px}
 
 /* ---------- moldura ---------- */
@@ -595,7 +611,13 @@ details.ajustar .painel{border:none;padding:0}
   nav.menu a{flex:none;white-space:nowrap;border:1px solid var(--linha);border-radius:999px;padding:8px 14px 8px 12px}
   nav.menu a.ativo{border-color:transparent}
   .g-2,.g-ativo,.calc,.entrada{grid-template-columns:1fr}
-  .entrada-arte{min-height:300px}
+  .entrada-arte{min-height:0;padding:30px 24px 64px;gap:14px}
+  .entrada-arte .logo.grande{font-size:54px}
+  .entrada-arte p{font-size:16px;max-width:320px}
+  .entrada-arte .velas{height:80px;bottom:0;opacity:.35}
+  .entrada-arte::after{height:60px}
+  .entrada-form{padding:0 14px 28px;margin-top:-34px;position:relative;z-index:2;justify-content:flex-start;background:none}
+  .entrada-form form{padding:26px 20px;border-radius:20px}
   .conteudo,.topo{padding-left:18px;padding-right:18px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -1897,33 +1919,46 @@ function telaEntrada() {
 
 function telaLogin(curva, modo = "entrar") {
   const textos = {
-    entrar: { titulo: "Entrar", botao: "Entrar", troca: `Ainda não tem conta? <a href="#" data-modo="criar">Criar conta grátis</a>` },
-    criar: { titulo: "Criar conta", botao: "Criar conta", troca: `Já tem conta? <a href="#" data-modo="entrar">Entrar</a>` },
+    entrar: { titulo: "Que bom te ver de volta", botao: "Entrar", troca: `Ainda não tem conta? <a href="#" data-modo="criar">Criar conta grátis</a>` },
+    criar: { titulo: "Comece grátis", botao: "Criar conta", troca: `Já tem conta? <a href="#" data-modo="entrar">Entrar</a>` },
     esqueci: { titulo: "Recuperar senha", botao: "Enviar link", troca: `<a href="#" data-modo="entrar">Voltar para entrar</a>` },
     nova: { titulo: "Criar nova senha", botao: "Salvar nova senha", troca: "" },
   }[modo];
   const ja = $("#entrada-arte") && $("#entrada-form");
+  const boas = { entrar: "Entre para ver as suas carteiras.", criar: "Crie a sua conta em menos de um minuto.", nova: "Escolha uma senha que você não usa em outro site." }[modo];
+  const alternar = modo === "entrar" || modo === "criar" ? `<nav class="alternar" aria-label="Entrar ou criar conta">
+        <a href="#" data-modo="entrar"${modo === "entrar" ? ' aria-current="page"' : ""}>Entrar</a><a href="#" data-modo="criar"${modo === "criar" ? ' aria-current="page"' : ""}>Criar conta</a></nav>` : "";
   const formulario = `
       <form id="form-login" novalidate>
+        ${alternar}
         <h1>${textos.titulo}</h1>
-        ${modo === "esqueci" ? `<p class="sutil" style="margin:-6px 0 0">Digite o e-mail da sua conta. Mandamos um link para você criar uma senha nova.</p>` : ""}
+        ${boas ? `<p class="boas-vindas">${boas}</p>` : ""}
+        ${modo === "esqueci" ? `<p class="boas-vindas">Digite o e-mail da sua conta. Mandamos um link para você criar uma senha nova.</p>` : ""}
         ${modo === "criar" ? `<label class="campo">Seu nome<input type="text" name="nome" required autocomplete="given-name"></label>` : ""}
-        ${modo !== "nova" ? `<label class="campo">E-mail<input type="email" name="email" required autocomplete="email"></label>` : ""}
-        ${modo !== "esqueci" ? `<label class="campo">${modo === "nova" ? "Nova senha" : "Senha"}<input type="password" name="senha" required minlength="6"
-            autocomplete="${modo === "entrar" ? "current-password" : "new-password"}">${modo !== "entrar" ? `<small class="fraco">No mínimo 6 caracteres</small>` : ""}</label>` : ""}
+        ${modo !== "nova" ? `<label class="campo">E-mail<input type="email" name="email" required autocomplete="email" inputmode="email"></label>` : ""}
+        ${modo !== "esqueci" ? `<label class="campo">${modo === "nova" ? "Nova senha" : "Senha"}<span class="senha-caixa"><input type="password" name="senha" required minlength="6"
+            autocomplete="${modo === "entrar" ? "current-password" : "new-password"}"><button type="button" class="ver-senha" aria-label="Mostrar senha">Mostrar</button></span>${modo !== "entrar" ? `<small class="fraco">No mínimo 6 caracteres</small>` : ""}</label>` : ""}
         ${modo === "entrar" ? `<a href="#" data-modo="esqueci" class="esqueci">Esqueci minha senha</a>` : ""}
         <p class="erro-login oculto" id="erro-login" role="alert"></p>
         <button class="btn primario" type="submit">${textos.botao}</button>
-        ${textos.troca ? `<p class="sutil" style="margin:0;text-align:center">${textos.troca}</p>` : ""}
+        ${modo === "esqueci" || modo === "nova" ? (textos.troca ? `<p class="sutil" style="margin:0;text-align:center">${textos.troca}</p>` : "") : ""}
         ${modo === "criar" ? `<p class="nota">Ao criar a conta, você concorda com os <a href="#termos">Termos de uso</a> e a <a href="#privacidade">Política de privacidade</a>.</p>` : ""}
+      </form>
+      <div class="entrada-rodape">
         <p class="nota">Suas carteiras ficam salvas na sua conta e abrem em qualquer computador ou celular.</p>
         <p class="nota links-legais"><a href="#termos">Termos de uso</a><a href="#privacidade">Privacidade</a><span>Desenvolvido pela PontoClique</span></p>
-      </form>`;
+      </div>`;
   if (ja) $("#entrada-form").innerHTML = formulario;
   else $("#raiz").innerHTML = `<main class="entrada">${arteEntrada()}<section class="entrada-form" id="entrada-form">${formulario}</section></main>`;
   ligarLupa();
   $$("[data-modo]").forEach((a) => a.onclick = (e) => { e.preventDefault(); telaLogin(curva, a.dataset.modo); });
   const form = $("#form-login"), botao = form.querySelector("button[type=submit]");
+  const ver = form.querySelector(".ver-senha");
+  if (ver) ver.onclick = () => {
+    const i = ver.previousElementSibling, mostra = i.type === "password";
+    i.type = mostra ? "text" : "password"; ver.textContent = mostra ? "Ocultar" : "Mostrar";
+    ver.setAttribute("aria-label", mostra ? "Ocultar senha" : "Mostrar senha"); i.focus();
+  };
   const erro = (msg) => { const el = $("#erro-login"); el.textContent = msg; el.classList.toggle("oculto", !msg); };
   form.querySelector("input")?.focus();
   form.addEventListener("submit", async (e) => {
