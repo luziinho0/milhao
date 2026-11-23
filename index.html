@@ -769,6 +769,20 @@ dialog.com-dlg::backdrop{background:rgba(10,20,15,.45)}
 dialog.com-dlg h2{margin:0 0 10px;font-size:18px}
 .com-motivos{display:grid;gap:6px;margin:6px 0 12px}
 .com-motivos label{display:flex;gap:8px;align-items:center;font-size:14.5px}
+/* rentabilidade */
+.rent-cartoes{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.rent-cartoes > div{border:1px solid var(--linha-2);border-radius:var(--r);padding:10px 14px}
+.rent-cartoes > div.eu{border-color:var(--verde);background:var(--verde-claro)}
+.rent-cartoes span{display:block;font-size:13px;color:var(--tinta-2)}
+.rent-cartoes strong{display:block;font-size:20px;font-weight:700;margin-top:2px}
+.rent-meses{overflow:auto}
+.rent-tab{font-size:13px;min-width:880px}
+.rent-tab th,.rent-tab td{padding:6px 7px;white-space:nowrap}
+.rent-tab tr.cart td{font-weight:600}
+.rent-tab tr.cdi td{border-top:0;padding-top:0}
+.rent-tab td.ref{color:var(--tinta-3);font-weight:450;font-size:12px}
+.rent-tab td.rot{color:var(--tinta-2);font-size:12px}
+.rent-tab tbody th{vertical-align:top;font-size:14px}
 /* conferência dos dados */
 .aviso-conf{display:flex;gap:12px;align-items:flex-start;border:1px solid #E9C46A;background:#FFF8E6;color:#5C4510;border-radius:var(--r);padding:12px 16px;margin:0 0 16px;font-size:14px}
 .aviso-conf b{display:block;margin-bottom:2px}
@@ -1184,7 +1198,7 @@ async function evolucao(c) {
   const datas = [...new Set(Object.values(series).flatMap((s) => s.map((p) => p[0])))].filter((d) => d >= ini).sort();
   const idx = Object.fromEntries(tickers.map((t) => [t, 0]));
   const ultimo = {};
-  return datas.map((d) => {
+  const out = datas.map((d) => {
     let total = 0, custo = 0;
     for (const t of tickers) {
       const s = series[t]; if (!s) continue;
@@ -1195,6 +1209,9 @@ async function evolucao(c) {
     for (const l of lanc) if (l.data <= d && (l.tipo === "C" || l.tipo === "V")) custo += (l.tipo === "C" ? 1 : -1) * l.qtd * l.preco;
     return { d, v: total, custo };
   });
+  out.tickers = tickers.filter((t) => series[t]?.length);   // ativos com histórico de preço (os outros ficam fora da rentabilidade)
+  out.inicio = Object.fromEntries(out.tickers.map((t) => [t, series[t][0][0]]));   // primeiro preço de cada ativo
+  return out;
 }
 
 /* ---------- gráficos (SVG desenhado à mão) ---------- */
@@ -2256,11 +2273,17 @@ rotas.carteira = async (el) => {
         <div class="grafico" id="g-evolucao"></div><p class="fraco" id="ref-nota" style="margin:8px 0 0">Tracejado: valor investido.</p></div>
       <div class="painel"><h2>Onde está o dinheiro</h2><div id="alocacao"></div></div>
     </div>
+    <div class="painel rent"><div class="cabeca" style="margin-bottom:10px"><div><h2 style="margin:0">Rentabilidade</h2>
+        <p class="fraco" style="margin:4px 0 0">Quanto a carteira rendeu, já com os proventos, sem contar o dinheiro que você colocou ou tirou.</p></div>
+        <div class="chips" role="group" aria-label="Período">${PERIODOS_RENT.map(([k, n]) => `<button class="chip" data-rent="${k}">${n}</button>`).join("")}</div></div>
+      <div id="rent-corpo"><div class="rent-cartoes" id="rent-cartoes"><div><span>Carteira</span><strong>…</strong></div></div>
+        <p class="fraco" id="rent-nota" style="margin:8px 0 4px"></p><div class="grafico" id="g-rent"></div>
+        <h3 style="margin:18px 0 8px">Mês a mês</h3><div class="rent-meses" id="rent-meses"><p class="fraco">Calculando…</p></div></div></div>
       <div class="painel"><h2>Posições</h2><div style="overflow:auto"><table>
-        <thead><tr><th>Ativo</th><th>Qtd.</th><th>Preço médio</th><th>Cotação</th><th>Preço teto</th><th>Valor</th><th>Resultado</th><th>Resultado (R$)</th><th>% da carteira</th></tr></thead>
+        <thead><tr><th>Ativo</th><th>Qtd.</th><th>Preço médio</th><th>Cotação</th><th>Preço teto</th><th>Valor</th><th>Resultado</th><th>Resultado (R$)</th><th title="Valorização + lucro em vendas + proventos recebidos, sobre o total que você comprou">Rentab. com proventos</th><th>% da carteira</th></tr></thead>
         <tbody>${abertas.map((p) => `<tr><td><a class="tk" href="#ativo-${p.ticker}">${p.ticker}</a><small>${esc(S.porTicker[p.ticker]?.n || "Fora da base atual")}</small></td>
           <td>${qtdF(p.qtd)}</td><td>${brl(p.pm)}</td><td>${brl(p.preco)}</td><td class="celula-teto" data-teto="${p.ticker}">${S.porTicker[p.ticker]?.tipo === "acao" ? "…" : "–"}</td><td>${brl(p.valor)}</td>
-          <td class="${cls(p.resultado)}">${pct(p.custo ? p.resultado / p.custo : null, 1, true)}</td><td class="${cls(p.resultado)}">${brl(p.resultado)}</td><td>${pct(total ? (p.valor || 0) / total : null)}</td></tr>`).join("")}</tbody></table></div></div>
+          <td class="${cls(p.resultado)}">${pct(p.custo ? p.resultado / p.custo : null, 1, true)}</td><td class="${cls(p.resultado)}">${brl(p.resultado)}</td><td data-rent-at="${p.ticker}">…</td><td>${pct(total ? (p.valor || 0) / total : null)}</td></tr>`).join("")}</tbody></table></div></div>
     <div class="painel"><div class="cabeca" style="margin-bottom:10px"><h2 style="margin:0">Lançamentos</h2><span class="fraco">${c.lancamentos.length} no total</span></div>
       <div class="rolagem" style="max-height:340px"><table><thead><tr><th>Data</th><th class="esq">Ativo</th><th class="esq">Operação</th><th>Qtd.</th><th>Preço</th><th>Total</th><th></th></tr></thead>
       <tbody>${ordenados(c).reverse().map((l) => `<tr><td style="text-align:left">${dataBR(l.data)}</td><td class="esq"><a class="tk" href="#ativo-${l.ticker}">${l.ticker}</a></td>
@@ -2320,6 +2343,12 @@ rotas.carteira = async (el) => {
   if ($("#ref-evolucao")) $("#ref-evolucao").onchange = desenharEvolucao;
   await desenharEvolucao();
   $("#prov-total").textContent = brl(provs.filter((p) => p.recebido).reduce((s, p) => s + p.total, 0));
+  $$("[data-rent-at]").forEach((td) => {
+    const p = abertas.find((x) => x.ticker === td.dataset.rentAt), r = rentabilidadeAtivo(c, p, provs);
+    td.className = cls(r.ganho);
+    td.innerHTML = `${pct(r.pct, 1, true)}<small style="display:block;color:var(--tinta-3)">${r.recebido ? brl(r.recebido) + " em proventos" : "sem proventos"}</small>`;
+  });
+  await painelRentabilidade(ev, c, provs);
 };
 
 /* ---------- lançamento ---------- */
@@ -4199,8 +4228,9 @@ function graficoMulti(el, series, { altura = 300, formato = (v) => pct(v, 1, tru
     const v = min + ((max - min) / 4) * k, y = Y(v);
     grade += `<line x1="${m.e}" x2="${L - m.d}" y1="${y}" y2="${y}" stroke="var(--linha-2)"/><text x="${L - m.d + 8}" y="${y + 4}" font-size="11.5" fill="var(--tinta-3)">${esc(formato(v))}</text>`;
   }
-  const datasEixo = [0, 1, 2, 3].map((k) => new Date(t0 + (k / 3) * (t1 - t0)).toISOString().slice(0, 10));
-  const eixo = datasEixo.map((d, k) => `<text x="${X(d)}" y="${A - 6}" font-size="11.5" fill="var(--tinta-3)" text-anchor="${k === 0 ? "start" : k === 3 ? "end" : "middle"}">${dataBR(d)}</text>`).join("");
+  const nEixo = L < 420 ? 2 : L < 640 ? 3 : 4;   // datas sem encavalar em tela pequena
+  const datasEixo = [...Array(nEixo).keys()].map((k) => new Date(t0 + (k / (nEixo - 1)) * (t1 - t0)).toISOString().slice(0, 10));
+  const eixo = datasEixo.map((d, k) => `<text x="${X(d)}" y="${A - 6}" font-size="11.5" fill="var(--tinta-3)" text-anchor="${k === 0 ? "start" : k === nEixo - 1 ? "end" : "middle"}">${dataBR(d)}</text>`).join("");
   const linhas = series.map((s, i) => `<path d="${s.pontos.map((p, k) => (k ? "L" : "M") + X(p.d).toFixed(1) + " " + Y(p.v).toFixed(1)).join("")}" fill="none" stroke="${s.cor || CORES_SERIES[i % 5]}" stroke-width="2"${s.tracejado ? ' stroke-dasharray="5 4"' : ""}/>`).join("");
   el.innerHTML = `<div class="legenda-multi">${series.map((s, i) => `<span><i style="background:${s.cor || CORES_SERIES[i % 5]}"></i>${esc(s.nome)}</span>`).join("")}</div>
     <svg viewBox="0 0 ${L} ${A}" height="${A}" role="img" aria-label="Gráfico comparando ${esc(series.map((s) => s.nome).join(", "))}">
@@ -5151,6 +5181,114 @@ function evolucaoReferencia(ev, c, serie) {
     cotas = Math.max(cotas, 0);
     return { d: p.d, v: cotas * ultimo };
   });
+}
+
+/* ---------- rentabilidade: quanto a carteira rendeu sem contar o dinheiro que entrou ou saiu (método de cotas) ---------- */
+// cada dia: r = (patrimônio do dia + proventos pagos no dia) / (patrimônio da véspera + aportes do dia − vendas do dia) − 1
+function rentabilidade(ev, c, provs) {
+  if (!ev.length) return [];
+  const datas = ev.map((p) => p.d), ok = new Set(ev.tickers || []);
+  const naData = (iso) => { let lo = 0, hi = datas.length - 1; if (iso > datas[hi]) return hi; while (lo < hi) { const m = (lo + hi) >> 1; if (datas[m] < iso) lo = m + 1; else hi = m; } return lo; };
+  const fluxo = new Float64Array(ev.length), prov = new Float64Array(ev.length);
+  for (const l of c.lancamentos) {
+    if ((l.tipo !== "C" && l.tipo !== "V") || !ok.has(l.ticker)) continue;
+    // compra antes do primeiro preço conhecido conta no dia em que o ativo passa a ter preço
+    const dia = ev.inicio?.[l.ticker] > l.data ? ev.inicio[l.ticker] : l.data;
+    fluxo[naData(dia)] += (l.tipo === "C" ? 1 : -1) * l.qtd * (l.preco || 0);
+  }
+  for (const p of provs) if (p.recebido && ok.has(p.ticker)) prov[naData(p.pagamento)] += p.total;
+  let cota = 1, antes = 0;
+  return ev.map((p, i) => {
+    const base = antes + fluxo[i];
+    if (base > 0.01 && (antes > 0 || p.v > 0)) cota *= 1 + Math.min(Math.max((p.v + prov[i]) / base - 1, -0.95), 3);
+    antes = p.v;
+    return { d: p.d, cota };
+  });
+}
+// valor da série [data, valor] no último ponto até a data
+function valorAte(serie, iso, campo = 1) {
+  let lo = 0, hi = serie.length - 1, r = null;
+  while (lo <= hi) { const m = (lo + hi) >> 1; const d = serie[m].d ?? serie[m][0]; if (d <= iso) { r = serie[m]; lo = m + 1; } else hi = m - 1; }
+  return r === null ? null : r.cota ?? r[campo];
+}
+const MESES_CURTOS = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+const PERIODOS_RENT = [["mes", "No mês"], ["ano", "No ano"], ["12m", "12 meses"], ["tudo", "Desde o início"]];
+function inicioPeriodo(per, ultima) {
+  const [a, m] = ultima.split("-").map(Number);
+  if (per === "mes") return `${ultima.slice(0, 7)}-01`;
+  if (per === "ano") return `${a}-01-01`;
+  if (per === "12m") return `${a - 1}-${String(m).padStart(2, "0")}-${ultima.slice(8, 10)}`;
+  return null;
+}
+// retorno de uma série no período: valor no fim / valor na véspera do início − 1
+function retornoNoPeriodo(serie, de, ate) {
+  if (!serie?.length) return null;
+  const fim = valorAte(serie, ate); if (fim === null) return null;
+  const vesp = new Date(Date.parse(de) - 864e5).toISOString().slice(0, 10);
+  const ini = valorAte(serie, vesp) ?? (serie[0].cota ?? serie[0][1]);
+  return ini ? fim / ini - 1 : null;
+}
+function mesAMes(cotas, ref) {
+  const anos = {};
+  let anterior = 1, refAnt = null, refBase = null;
+  const meses = [...new Set(cotas.map((p) => p.d.slice(0, 7)))];
+  for (const ym of meses) {
+    const fim = valorAte(cotas, ym + "-31"), [a, m] = ym.split("-").map(Number);
+    const linha = anos[a] ??= { carteira: Array(12).fill(null), ref: Array(12).fill(null), ini: anterior, refIni: null };
+    linha.carteira[m - 1] = fim / anterior - 1;
+    if (ref?.length) {
+      const rf = valorAte(ref, ym + "-31"), ri = refAnt ?? valorAte(ref, new Date(Date.parse(cotas[0].d) - 864e5).toISOString().slice(0, 10)) ?? ref[0][1];
+      if (rf && ri) linha.ref[m - 1] = rf / ri - 1;
+      if (linha.refIni === null) linha.refIni = ri;
+      if (refBase === null) refBase = ri;
+      refAnt = rf;
+    }
+    anterior = fim;
+    linha.fim = fim; linha.refFim = refAnt;
+  }
+  return Object.entries(anos).map(([a, l]) => ({ ano: +a, ...l, noAno: l.fim / l.ini - 1, acumulado: l.fim - 1,
+    refAno: l.refIni && l.refFim ? l.refFim / l.refIni - 1 : null, refAcum: refBase && l.refFim ? l.refFim / refBase - 1 : null })).sort((x, y) => y.ano - x.ano);
+}
+async function painelRentabilidade(ev, c, provs) {
+  const box = $("#rent-corpo"); if (!box) return;
+  const cotas = rentabilidade(ev, c, provs);
+  if (cotas.length < 2) { box.innerHTML = `<p class="fraco">A rentabilidade aparece a partir do segundo pregão depois da primeira compra.</p>`; return; }
+  const refs = [["cdi", "CDI"], ...(S.porTicker.BOVA11 ? [["ibov", "Ibovespa"]] : []), ...(S.porTicker.XFIX11 ? [["ifix", "IFIX"]] : [])];
+  const series = {};
+  await Promise.all(refs.map(async ([k]) => { series[k] = await serieReferencia(k); }));
+  if (!$("#rent-corpo")) return;
+  const ultima = cotas.at(-1).d, primeira = cotas[0].d;
+  let per = S.rentPeriodo || "12m";
+  const desenhar = () => {
+    const ini0 = inicioPeriodo(per, ultima), ini = !ini0 || ini0 < primeira ? primeira : ini0;
+    const rc = retornoNoPeriodo(cotas, ini, ultima);
+    const cartoes = [["Carteira", rc, true], ...refs.map(([k, n]) => [n, retornoNoPeriodo(series[k], ini, ultima), false])];
+    const pts = (serie, campo) => {
+      const vesp = new Date(Date.parse(ini) - 864e5).toISOString().slice(0, 10);
+      const base = valorAte(serie, vesp) ?? (serie[0].cota ?? serie[0][1]);
+      return serie.filter((p) => (p.d ?? p[0]) >= ini && (p.d ?? p[0]) <= ultima).map((p) => ({ d: p.d ?? p[0], v: (p.cota ?? p[campo]) / base - 1 }));
+    };
+    $("#rent-cartoes").innerHTML = cartoes.map(([n, v, eu]) => `<div class="${eu ? "eu" : ""}"><span>${n}</span><strong class="${eu ? cls(v) : ""}">${pct(v, 2, true)}</strong></div>`).join("");
+    $("#rent-nota").textContent = ini === primeira ? `Desde a primeira compra, em ${dataBR(primeira)}, até ${dataBR(ultima)}.` : `De ${dataBR(ini)} a ${dataBR(ultima)}.`;
+    graficoMulti($("#g-rent"), [{ nome: "Carteira", pontos: pts(cotas), cor: "var(--verde)" },
+      ...refs.filter(([k]) => series[k]?.length).map(([k, n], i) => ({ nome: n, pontos: pts(series[k], 1), cor: ["#A97A1C", "#3F7FA6", "#7A5BA6"][i], tracejado: true }))], { altura: 240, formato: (v) => pct(v, 1, true) });
+  };
+  $$("[data-rent]").forEach((b) => b.onclick = () => { per = S.rentPeriodo = b.dataset.rent; $$("[data-rent]").forEach((x) => x.setAttribute("aria-pressed", x === b)); desenhar(); });
+  $$("[data-rent]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.rent === per));
+  desenhar();
+  const tab = mesAMes(cotas, series.cdi);
+  const cel = (v, fraco = false) => `<td class="${fraco ? "ref" : cls(v)}">${vazio(v) ? "" : pct(v, 2, !fraco)}</td>`;
+  const comCdi = !!series.cdi?.length;
+  $("#rent-meses").innerHTML = `<table class="rent-tab"><thead><tr><th class="esq">Ano</th><th class="esq"></th>${MESES_CURTOS.map((m) => `<th>${m}</th>`).join("")}<th>No ano</th><th>Acumulado</th></tr></thead><tbody>
+    ${tab.map((l) => `<tr class="cart"><th class="esq" rowspan="${comCdi ? 2 : 1}">${l.ano}</th><td class="esq rot">Carteira</td>${l.carteira.map((v) => cel(v)).join("")}${cel(l.noAno)}${cel(l.acumulado)}</tr>
+      ${comCdi ? `<tr class="cdi"><td class="esq rot ref">CDI</td>${l.ref.map((v) => cel(v, true)).join("")}${cel(l.refAno, true)}${cel(l.refAcum, true)}</tr>` : ""}`).join("")}</tbody></table>`;
+}
+// rentabilidade de cada ativo: valorização + lucro de vendas + proventos recebidos, sobre o que foi comprado
+function rentabilidadeAtivo(c, p, provs) {
+  const comprado = c.lancamentos.filter((l) => l.ticker === p.ticker && l.tipo === "C").reduce((s, l) => s + l.qtd * (l.preco || 0), 0);
+  const recebido = provs.filter((x) => x.ticker === p.ticker && x.recebido).reduce((s, x) => s + x.total, 0);
+  const ganho = (p.resultado || 0) + p.realizado + recebido;
+  return { ganho, pct: comprado ? ganho / comprado : null, recebido };
 }
 
 /* ---------- calculadoras extras ---------- */
