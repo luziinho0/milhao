@@ -783,6 +783,13 @@ dialog.com-dlg h2{margin:0 0 10px;font-size:18px}
 .rent-tab td.ref{color:var(--tinta-3);font-weight:450;font-size:12px}
 .rent-tab td.rot{color:var(--tinta-2);font-size:12px}
 .rent-tab tbody th{vertical-align:top;font-size:14px}
+/* painel de ações baratas */
+.selo-b{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:2px 9px}
+.selo-b.barata{background:#E3F0EA;color:#0B6E4F}.selo-b.cara{background:#FBE7E5;color:#A3342B}
+[data-tema=escuro] .selo-b.barata{background:#16301F;color:#9FE0BF}[data-tema=escuro] .selo-b.cara{background:#3A1D1A;color:#F2B1AA}
+.potencial{display:inline-block;min-width:76px;text-align:right;font-weight:700;border-radius:6px;padding:3px 8px;color:#fff}
+.potencial.alta{background:#0F8A62}.potencial.baixa{background:#C2453D}
+.nota-baratas{max-width:900px;line-height:1.5;margin:4px 0 10px}
 /* conferência dos dados */
 .aviso-conf{display:flex;gap:12px;align-items:flex-start;border:1px solid #E9C46A;background:#FFF8E6;color:#5C4510;border-radius:var(--r);padding:12px 16px;margin:0 0 16px;font-size:14px}
 .aviso-conf b{display:block;margin-bottom:2px}
@@ -2899,6 +2906,7 @@ const COLS_MERCADO = [["t", "Ativo"], ["preco", "Cotação", brl], ["var_dia", "
 const PRESETS = {
   acao: [
     ["Mais negociadas", (a) => a, "liq", -1],
+    ["Ações baratas (Graham e Greenblatt)", (a) => a, "up_graham", -1, "baratas"],
     ["Maiores dividend yields", (a) => a.filter((x) => x.dy > 0), "dy", -1],
     ["Menores P/L", (a) => a.filter((x) => x.pl > 0), "pl", 1],
     ["Mais descontadas (Graham)", (a) => a.filter((x) => x.graham), "up_graham", -1],
@@ -2939,16 +2947,36 @@ const COLS = {
     ["dy", "DY 12m", pct], ["pvp", "P/VP", xv], ["vp", "VP por cota", brl], ["magic", "Magic number", (v) => vazio(v) ? "–" : F.n0.format(v)], ["liq", "Liquidez diária", compacto]],
   fiagro: COLS_MERCADO, etf: COLS_MERCADO, bdr: COLS_MERCADO,
 };
+// painel de ações baratas: preço justo de Graham e Fórmula Mágica de Greenblatt
+const seloBarata = (v) => v === "barata" ? `<span class="selo-b barata">Barata</span>` : v === "cara" ? `<span class="selo-b cara">Cara</span>` : `<span class="fraco" title="Sem lucro ou patrimônio positivo para calcular">–</span>`;
+const COLS_BARATAS = [["t", "Ativo"], ["preco", "Cotação", brl], ["dy", "DY", pct], ["pl", "P/L", xv], ["pvp", "P/VP", xv], ["roe", "ROE", pct],
+  ["graham", "Preço justo Graham", brl], ["sel_graham", "Graham", seloBarata], ["sel_green", "Greenblatt", seloBarata],
+  ["up_graham", "Potencial", (v) => vazio(v) ? "–" : `<span class="potencial ${v >= 0 ? "alta" : "baixa"}">${pct(v, 2, true)}</span>`]];
+const LIQ_GREENBLATT = 100000;   // só entram no ranking da Fórmula Mágica ações com R$ 100 mil por dia ou mais
+function marcarBaratas(dados) {
+  for (const a of dados) if (a.tipo === "acao") a.sel_graham = a.graham > 0 && a.preco > 0 ? (a.preco < a.graham ? "barata" : "cara") : null;
+  // Fórmula Mágica: posição no EV/EBIT (menor é melhor) + posição no ROIC (maior é melhor); o terço mais bem colocado é "barata"
+  const ok = dados.filter((a) => a.tipo === "acao" && a.ev_ebit > 0 && a.roic > 0 && (a.liq || 0) >= LIQ_GREENBLATT);
+  const pos = (arr, k, dir) => new Map([...arr].sort((x, y) => (x[k] - y[k]) * dir).map((a, i) => [a.t, i + 1]));
+  const pEv = pos(ok, "ev_ebit", 1), pRoic = pos(ok, "roic", -1);
+  const ranking = ok.map((a) => [a, pEv.get(a.t) + pRoic.get(a.t)]).sort((x, y) => x[1] - y[1]);
+  const corte = Math.ceil(ranking.length / 3);
+  ranking.forEach(([a], i) => { a.sel_green = i < corte ? "barata" : "cara"; a.rank_green = i + 1; });
+  for (const a of dados) if (a.tipo === "acao" && a.sel_green === undefined) a.sel_green = a.ev_ebit != null || a.roic != null ? "cara" : null;
+  return ranking.length;
+}
 const FILTROS = {
-  acao: [["dy", "DY (%)", 100], ["pl", "P/L", 1], ["pvp", "P/VP", 1], ["roe", "ROE (%)", 100]],
+  acao: [["dy", "DY (%)", 100], ["pl", "P/L", 1], ["pvp", "P/VP", 1], ["roe", "ROE (%)", 100], ["liq", "Liquidez diária (R$ mil)", 1 / 1000]],
   fii: [["dy", "DY (%)", 100], ["pvp", "P/VP", 1], ["liq", "Liquidez (R$ mil)", 1 / 1000]],
   fiagro: [["dy", "DY (%)", 100], ["liq", "Liquidez (R$ mil)", 1 / 1000]],
   etf: [["var_12m", "12 meses (%)", 100], ["liq", "Liquidez (R$ mil)", 1 / 1000]],
   bdr: [["var_12m", "12 meses (%)", 100], ["liq", "Liquidez (R$ mil)", 1 / 1000]],
 };
-const UI = { tipo: "acao", preset: 0, ordem: null, dir: -1, filtros: {}, setor: "" };
+const UI = { tipo: "acao", preset: 0, ordem: null, dir: -1, filtros: {}, setor: "", graham: "", green: "", codigo: "" };
 rotas.explorar = (el) => {
   const dados = S.ativos.map((a) => ({ ...a, up_graham: a.graham && a.preco ? a.graham / a.preco - 1 : null }));
+  const nRanking = marcarBaratas(dados);
+  const selBarata = (id, nome, v) => `<label class="campo">${nome}<select id="${id}"><option value="">Todas</option><option value="barata" ${v === "barata" ? "selected" : ""}>Baratas</option><option value="cara" ${v === "cara" ? "selected" : ""}>Caras</option></select></label>`;
   const setores = [...new Set(dados.filter((a) => a.tipo === UI.tipo).map((a) => a.setor))].sort();
   const tipos = Object.keys(CLASSES).filter((k) => k === "acao" || k === "fii" || dados.some((a) => a.tipo === k));
   if (!tipos.includes(UI.tipo)) UI.tipo = "acao";
@@ -2957,24 +2985,34 @@ rotas.explorar = (el) => {
     <div class="abas" role="tablist">${tipos.map((k) => `<button role="tab" aria-selected="${UI.tipo === k}" data-tipo="${k}">${CLASSES[k].aba}</button>`).join("")}</div>
     <div class="chips">${PRESETS[UI.tipo].map((p, i) => `<button class="chip" aria-pressed="${UI.preset === i}" data-preset="${i}">${p[0]}</button>`).join("")}</div>
     <div class="filtros">
+      <label class="campo">Código<input type="search" id="f-codigo" placeholder="Ex.: PETR4" autocomplete="off" value="${esc(UI.codigo)}" style="text-transform:uppercase"></label>
       <label class="campo" ${unico ? `style="display:none"` : ""}>${UI.tipo === "fii" ? "Segmento" : "Setor"}<select id="f-setor"><option value="">Todos</option>${setores.map((s) => `<option ${s === UI.setor ? "selected" : ""}>${esc(s)}</option>`).join("")}</select></label>
       ${FILTROS[UI.tipo].map(([k, n]) => `<label class="campo">${n}<span class="faixa">
         <input type="number" step="any" placeholder="mín." data-f="${k}" data-lim="min" value="${UI.filtros[k + "min"] ?? ""}">
         <input type="number" step="any" placeholder="máx." data-f="${k}" data-lim="max" value="${UI.filtros[k + "max"] ?? ""}"></span></label>`).join("")}
+      ${UI.tipo === "acao" ? selBarata("f-graham", "Graham", UI.graham) + selBarata("f-green", "Greenblatt", UI.green) : ""}
+      <div class="campo" style="justify-content:flex-end"><button class="btn" id="f-limpar">Limpar filtros</button></div>
     </div>
+    <p class="fraco nota-baratas oculto" id="nota-baratas">Preço justo de Graham = √(22,5 × lucro por ação × valor patrimonial por ação), com o lucro líquido dos últimos 12 meses do último balanço. Barata quando a cotação está abaixo dele, e o potencial é a distância até esse preço.
+      Greenblatt (Fórmula Mágica): soma a posição de cada empresa no EV/EBIT (quanto menor, mais barata) e no ROIC (quanto maior, mais rentável), entre as ${nRanking} ações com lucro operacional e liquidez acima de ${compacto(LIQ_GREENBLATT)} por dia. O terço mais bem colocado é "barata". Não é recomendação de investimento.</p>
     <p class="fraco" id="contagem"></p>
     <div class="rolagem" id="tabela"></div>`;
   const desenhar = () => {
-    const [, filtro, chave, dir] = PRESETS[UI.tipo][UI.preset];
+    const [, filtro, chave, dir, modo] = PRESETS[UI.tipo][UI.preset];
     let lista = filtro(dados.filter((a) => a.tipo === UI.tipo));
     if (UI.setor) lista = lista.filter((a) => a.setor === UI.setor);
+    if (UI.codigo) lista = lista.filter((a) => a.t.includes(UI.codigo) || _semAcento(a.n || "").includes(_semAcento(UI.codigo)));
+    if (UI.tipo === "acao" && UI.graham) lista = lista.filter((a) => a.sel_graham === UI.graham);
+    if (UI.tipo === "acao" && UI.green) lista = lista.filter((a) => a.sel_green === UI.green);
+    $("#nota-baratas").classList.toggle("oculto", modo !== "baratas");
     for (const [k, , esc_] of FILTROS[UI.tipo]) {
       const mn = UI.filtros[k + "min"], mx = UI.filtros[k + "max"];
       if (mn !== undefined && mn !== "") lista = lista.filter((a) => a[k] != null && a[k] * esc_ >= +mn);
       if (mx !== undefined && mx !== "") lista = lista.filter((a) => a[k] != null && a[k] * esc_ <= +mx);
     }
     const ord = UI.ordem || chave, d = UI.ordem ? UI.dir : dir;
-    const cols = COL_EXTRA[chave] && !COLS[UI.tipo].some(([k]) => k === chave) ? [...COLS[UI.tipo].slice(0, 3), [chave, ...COL_EXTRA[chave]], ...COLS[UI.tipo].slice(3)] : COLS[UI.tipo];
+    const cols = modo === "baratas" ? COLS_BARATAS
+      : COL_EXTRA[chave] && !COLS[UI.tipo].some(([k]) => k === chave) ? [...COLS[UI.tipo].slice(0, 3), [chave, ...COL_EXTRA[chave]], ...COLS[UI.tipo].slice(3)] : COLS[UI.tipo];
     lista.sort((a, b) => {
       const x = a[ord], y = b[ord];
       if (vazio(x) && vazio(y)) return 0; if (vazio(x)) return 1; if (vazio(y)) return -1;
@@ -2992,9 +3030,13 @@ rotas.explorar = (el) => {
       const k = th.dataset.k; UI.dir = UI.ordem === k ? -UI.dir : (k === "t" || k === "setor" ? 1 : -1); UI.ordem = k; desenhar();
     });
   };
-  $$("[data-tipo]").forEach((b) => b.onclick = () => { UI.tipo = b.dataset.tipo; UI.preset = 0; UI.ordem = null; UI.setor = ""; UI.filtros = {}; render(); });
+  $$("[data-tipo]").forEach((b) => b.onclick = () => { UI.tipo = b.dataset.tipo; UI.preset = 0; UI.ordem = null; UI.setor = ""; UI.filtros = {}; UI.graham = ""; UI.green = ""; render(); });
   $$("[data-preset]").forEach((b) => b.onclick = () => { UI.preset = +b.dataset.preset; UI.ordem = null; $$("[data-preset]").forEach((x) => x.setAttribute("aria-pressed", x === b)); desenhar(); });
   $("#f-setor").onchange = (e) => { UI.setor = e.target.value; desenhar(); };
+  $("#f-codigo").oninput = (e) => { UI.codigo = e.target.value.trim().toUpperCase(); desenhar(); };
+  if ($("#f-graham")) $("#f-graham").onchange = (e) => { UI.graham = e.target.value; desenhar(); };
+  if ($("#f-green")) $("#f-green").onchange = (e) => { UI.green = e.target.value; desenhar(); };
+  $("#f-limpar").onclick = () => { UI.filtros = {}; UI.setor = ""; UI.graham = ""; UI.green = ""; UI.codigo = ""; UI.ordem = null; render(); };
   $$("[data-f]").forEach((i) => i.oninput = () => { UI.filtros[i.dataset.f + i.dataset.lim] = i.value; desenhar(); });
   desenhar();
 };
