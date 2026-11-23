@@ -710,6 +710,65 @@ details.ajustar .painel{border:none;padding:0}
 .rec-dono textarea{width:100%;min-height:70px;font:inherit;font-size:14px;border:1px solid var(--linha);border-radius:8px;padding:8px 10px;background:var(--branco);color:var(--tinta)}
 .rec-feito{text-align:center;padding:26px 18px}
 .rec-feito strong{display:block;font-size:22px;margin:6px 0}
+/* comunidade (Milhão Ouro) */
+nav.menu a .cadeado{width:14px;height:14px;margin-left:auto;opacity:.55;flex:none}
+.com-grade{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
+@media (max-width:980px){.com-grade{grid-template-columns:1fr}}
+.com-lado{display:grid;gap:14px}
+.com-lado .painel{padding:16px 18px}
+.com-lado h2{font-size:15px;margin:0 0 8px}
+.com-eu{display:flex;align-items:center;gap:10px}
+.com-eu b{display:block}
+.com-regras{margin:0;padding-left:18px;display:grid;gap:6px;font-size:13.5px;color:var(--tinta-2);line-height:1.45}
+.com-barra{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.com-barra .chips{flex:1 1 auto}
+.com-barra input{width:120px;font:inherit;font-size:13.5px;border:1px solid var(--linha);border-radius:999px;padding:6px 12px;background:var(--branco);color:var(--tinta);text-transform:uppercase}
+.com-lista{display:grid;gap:10px}
+.com-post{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;padding:14px 16px;border:1px solid var(--linha);border-radius:var(--r);background:var(--branco);text-decoration:none;color:inherit}
+a.com-post:hover{border-color:var(--verde)}
+a.com-post:focus-visible{outline:2px solid var(--verde);outline-offset:2px}
+.com-meta{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;font-size:13px;color:var(--tinta-3)}
+.com-meta b{color:var(--tinta);font-weight:650}
+a.com-tema,a.com-ativo{text-decoration:none}
+.com-tema{font-size:12px;font-weight:600;border-radius:999px;padding:1px 8px;background:var(--linha-2);color:var(--tinta-2)}
+.com-ativo{font-size:12px;font-weight:700;border-radius:6px;padding:1px 7px;background:var(--verde-claro);color:var(--verde)}
+.com-post h3{margin:4px 0 2px;font-size:16px;line-height:1.3}
+.com-resumo{margin:0;color:var(--tinta-2);font-size:14px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.com-conta{display:inline-flex;align-items:center;gap:5px;font-size:13px;color:var(--tinta-3);margin-top:6px}
+.com-conta svg{width:15px;height:15px}
+.com-texto{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.55;font-size:15px}
+.com-fio{display:grid;gap:12px}
+.com-fio > .painel{margin:0}
+.com-fio h1{font-size:24px;margin:6px 0 10px;line-height:1.25}
+.com-resp{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;padding:14px 0;border-top:1px solid var(--linha-2)}
+.com-resp:first-child{border-top:0;padding-top:0}
+.com-acoes{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.com-acoes .btn.texto{padding:4px 6px;font-size:13px;color:var(--tinta-3)}
+.com-acoes .btn.texto:hover{color:var(--verde)}
+.com-removido{opacity:.55}
+.com-removido .com-meta::after{content:"Removido pela moderação";font-weight:650;color:var(--queda)}
+.com-form{display:grid;gap:12px}
+.com-form textarea{width:100%;min-height:120px;resize:vertical;font:inherit;font-size:15px;line-height:1.45;color:var(--tinta);border:1px solid var(--linha);border-radius:8px;padding:10px 12px;background:var(--branco)}
+.com-form .linha2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:600px){.com-form .linha2{grid-template-columns:1fr}}
+.com-arroba{display:flex;align-items:center;border:1px solid var(--linha);border-radius:8px;background:var(--branco);padding-left:10px}
+.com-arroba span{color:var(--tinta-3);font-weight:650}
+.com-arroba input{border:0!important;background:transparent!important;flex:1;min-width:0;box-shadow:none!important;padding-left:3px!important}
+.com-arroba:focus-within{outline:2px solid var(--verde);outline-offset:1px}
+.com-arroba input:focus{outline:none}
+#com-perfil .campo{max-width:420px}
+.com-trava{position:relative;min-height:440px;border-radius:var(--r);overflow:hidden}
+.com-trava .com-lista{filter:blur(5px);opacity:.7;pointer-events:none;user-select:none}
+.com-convite{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(180deg,transparent,var(--papel) 70%)}
+.com-convite .painel{max-width:440px;text-align:left;box-shadow:0 12px 40px rgba(19,36,28,.14)}
+.com-convite h2{display:flex;align-items:center;gap:8px;margin-top:0}
+.com-convite .cadeado{width:20px;height:20px;color:#B88A2C}
+.av-com{--tam:36px}
+dialog.com-dlg{border:1px solid var(--linha);border-radius:12px;padding:20px 22px;max-width:420px;width:calc(100% - 32px);background:var(--branco);color:var(--tinta)}
+dialog.com-dlg::backdrop{background:rgba(10,20,15,.45)}
+dialog.com-dlg h2{margin:0 0 10px;font-size:18px}
+.com-motivos{display:grid;gap:6px;margin:6px 0 12px}
+.com-motivos label{display:flex;gap:8px;align-items:center;font-size:14.5px}
 /* conferência dos dados */
 .aviso-conf{display:flex;gap:12px;align-items:flex-start;border:1px solid #E9C46A;background:#FFF8E6;color:#5C4510;border-radius:var(--r);padding:12px 16px;margin:0 0 16px;font-size:14px}
 .aviso-conf b{display:block;margin-bottom:2px}
@@ -1682,6 +1741,7 @@ const ICO = {
   metas: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>',
   imposto: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>',
   perfil: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4s6.3 1.8 7.5 5.4"/></svg>',
+  comunidade: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h12v8H8l-5 4z"/><path d="M15 9h6v8l-4-3h-6v-1"/></svg>',
   reclame: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M12 8.5v3.2M12 13.9v.1"/></svg>',
   carteira: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M16 13h2M3 10h18M7 6V4h10v2"/></svg>',
   proventos: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M14.5 9.5c-.5-1-1.5-1.5-2.5-1.5-1.4 0-2.5.8-2.5 2s1.1 1.7 2.5 2 2.5.8 2.5 2-1.1 2-2.5 2c-1 0-2-.5-2.5-1.5M12 6.5V8M12 16v1.5"/></svg>',
@@ -2098,18 +2158,19 @@ function telaCarteiras() {
 /* ---------- moldura ---------- */
 function moldura(rota) {
   const c = carteira(), rolagemMenu = document.querySelector("nav.menu")?.scrollLeft || 0;
-  const item = (r, nome) => `<a href="#${r}" class="${rota === r || (r === "explorar" && rota === "ativo") ? "ativo" : ""}">${ICO[r]}${nome}</a>`;
+  const item = (r, nome, trava = false) => `<a href="#${r}" class="${rota === r || (r === "explorar" && rota === "ativo") ? "ativo" : ""}">${ICO[r]}${nome}${trava ? ICO_CADEADO : ""}</a>`;
   $("#raiz").innerHTML = `<div class="app">
     <aside class="lateral">
       <a href="#carteiras" class="marca-link" aria-label="Milhão, voltar para a tela inicial">${logoHTML("pequena")}</a>
       <button class="carteira-atual" id="trocar-carteira"><small>Carteira</small><strong>${esc(c?.nome || "Escolher")}</strong></button>
       <nav class="menu" aria-label="Principal">
-        ${item("carteira", "Carteira")}${item("consolidador", "Consolidador")}${item("analise", "Análise")}${item("proventos", "Proventos")}${item("metas", "Metas")}${item("agenda", "Agenda de dividendos")}${item("explorar", "Ativos da bolsa")}${item("comparar", "Comparar")}${item("indicadores", "Indicadores")}${item("ferramentas", "Ferramentas")}${item("imposto", "Imposto de Renda")}${item("reclame", "Reclame aqui")}${item("perfil", "Perfil")}
+        ${item("carteira", "Carteira")}${item("consolidador", "Consolidador")}${item("analise", "Análise")}${item("proventos", "Proventos")}${item("metas", "Metas")}${item("agenda", "Agenda de dividendos")}${item("explorar", "Ativos da bolsa")}${item("comparar", "Comparar")}${item("indicadores", "Indicadores")}${item("ferramentas", "Ferramentas")}${item("imposto", "Imposto de Renda")}${item("comunidade", "Comunidade", !(ehOuro() || ehCriadorMilhao()))}${item("perfil", "Perfil")}
       </nav>
       <div class="rodape">
         <span>Cotações de fechamento de ${dataBR(S.meta?.ultimo_pregao)}</span>
         <span>Fontes: B3 e CVM</span>
         <a href="#conferencia" style="color:inherit">${S.meta?.conferencia ? "Dados conferidos em " + dataBR(S.meta.conferencia.feito_em.slice(0, 10)) : "Conferência dos dados"}</a>
+        <a href="#reclame" style="color:inherit">Reportar erro ou sugestão</a>
         <button class="btn texto" style="padding:0;text-align:left" id="exportar">Exportar backup</button>
         <button class="btn texto" style="padding:0;text-align:left" id="importar-backup">Restaurar backup</button>
       </div>
@@ -3057,7 +3118,7 @@ rotas.ativo = async (el, t) => {
     ${pos ? `<p class="sutil" style="margin:-8px 0 16px">Você tem ${qtdF(pos.qtd)} ${classe(d.tipo).unidade} a ${brl(pos.pm)} de preço médio: <b class="${cls(pos.resultado)}">${pct(pos.custo ? pos.resultado / pos.custo : null, 1, true)}</b>.</p>` : ""}
     <div class="abas" role="tablist">${abas.map(([k, n], i) => `<button role="tab" aria-selected="${i === 0}" data-aba="${k}">${n}</button>`).join("")}</div>
     ${abas.map(([k], i) => `<section data-painel="${k}" class="${i ? "oculto" : ""}">${(fii ? PAINEIS_FII : simples ? PAINEIS_MERCADO : PAINEIS_ACAO)[k](d, ind, med)}</section>`).join("")}
-    <p class="fraco" style="margin-top:18px">Calculado pelo Milhão com ${simples ? "" : `dados da CVM${d.base?.referencia ? " até " + dataBR(d.base.referencia) : ""} e `}cotações da B3. Não é recomendação de investimento. Viu algo estranho neste ativo? <a href="#reclame-dado-${encodeURIComponent(d.ticker)}">Avise a gente</a>.</p>`;
+    <p class="fraco" style="margin-top:18px">Calculado pelo Milhão com ${simples ? "" : `dados da CVM${d.base?.referencia ? " até " + dataBR(d.base.referencia) : ""} e `}cotações da B3. Não é recomendação de investimento. Viu algo estranho neste ativo? <a href="#reclame-dado-${encodeURIComponent(d.ticker)}">Avise a gente</a>. Quer trocar ideia sobre ${esc(d.ticker)}? <a href="#comunidade-ativo-${encodeURIComponent(d.ticker)}">Veja na Comunidade</a>.</p>`;
   $("#add").onclick = () => abrirLancamento(d.ticker);
   $("#fav").onclick = (e) => {
     const agora = alternarFavorito(d.ticker), b = e.currentTarget;
@@ -4533,7 +4594,7 @@ rotas.indicadores = async (el) => {
   const prim = $("[data-ind]"); if (prim) desenhar(prim.dataset.ind);
 };
 
-/* ---------- Reclame aqui: o cliente avisa de erro, dado estranho, pagamento ou dá ideia ---------- */
+/* ---------- Reportar erro (antigo Reclame aqui): o cliente avisa de erro, dado estranho, pagamento ou dá ideia ---------- */
 const REC_TIPOS = [["bug", "Algo não funciona"], ["dado", "Dado errado"], ["pagamento", "Pagamento ou plano"], ["sugestao", "Sugestão"], ["outro", "Outro"]];
 const REC_DICA = { bug: "Conte o que você fez e o que aconteceu. Ex.: cliquei em Importar da B3, escolhi o arquivo e a tela ficou em branco.",
   dado: "Qual dado está errado e qual seria o certo? Ex.: o dividend yield de PETR4 aparece 2%, mas pelos proventos dá uns 12%.",
@@ -4567,7 +4628,7 @@ rotas.reclame = async (el, arg = "") => {
   const ondeIni = ativoIni ? "ativo" : REC_ONDE.some((o) => o[0] === veio) ? veio : "";
   const tipo0 = REC_TIPOS.some((t) => t[0] === tipoIni) ? tipoIni : "bug";
   const contato0 = S.usuario?.email || "";
-  el.innerHTML = `<div class="cabeca"><div><h1>Reclame aqui</h1><p class="sutil" style="margin:6px 0 0">Achou um erro, um dado estranho ou tem uma ideia? Conte para a gente. Cada mensagem é lida pelo criador do Milhão, e a resposta aparece aqui mesmo.</p></div></div>
+  el.innerHTML = `<div class="cabeca"><div><h1>Reportar erro ou sugestão</h1><p class="sutil" style="margin:6px 0 0">Achou um erro, um dado estranho ou tem uma ideia? Conte para a gente. Cada mensagem é lida pelo criador do Milhão, e a resposta aparece aqui mesmo.</p></div></div>
     <div class="rec-grade">
       <section class="painel" id="rec-caixa"><form class="rec-form" id="rec-form" novalidate>
         <fieldset style="border:0;padding:0;margin:0"><legend class="sutil" style="font-size:13px;font-weight:550;margin-bottom:6px">Sobre o quê?</legend>
@@ -4583,9 +4644,9 @@ rotas.reclame = async (el, arg = "") => {
         <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn primario" type="submit" id="rec-enviar">Enviar</button>
           <small class="fraco">Nunca escreva senha nem número de cartão aqui.</small></div>
       </form></section>
-      <section class="painel" style="margin-top:0"><h2 style="margin-top:0">Minhas reclamações</h2><div id="rec-minhas"><p class="fraco">Carregando…</p></div></section>
+      <section class="painel" style="margin-top:0"><h2 style="margin-top:0">Minhas mensagens</h2><div id="rec-minhas"><p class="fraco">Carregando…</p></div></section>
     </div>
-    <section class="painel oculto" id="rec-painel-dono" style="margin-top:16px"><div class="cabeca" style="margin-bottom:10px"><h2 style="margin:0">Todas as reclamações</h2>
+    <section class="painel oculto" id="rec-painel-dono" style="margin-top:16px"><div class="cabeca" style="margin-bottom:10px"><h2 style="margin:0">Todas as mensagens</h2>
       <div class="chips" style="margin:0">${[["aberta", "Abertas"], ["vendo", "Em análise"], ["resolvida", "Resolvidas"], ["todas", "Todas"]].map(([k, n], i) => `<button class="chip" data-rf="${k}" aria-pressed="${i === 0}">${n}</button>`).join("")}</div></div>
       <div id="rec-todas"></div></section>`;
   const f = $("#rec-form"), msg = f.mensagem;
@@ -4609,7 +4670,7 @@ rotas.reclame = async (el, arg = "") => {
     if (/\b(?:\d[ -]?){13,19}\b/.test(dados.mensagem)) { aviso("Parece que tem um número de cartão na mensagem. Tire antes de enviar."); msg.focus(); return; }
     if (!S.nuvem || !S.usuario) {
       if (!VENDEDOR.email) { aviso("Entre na sua conta para enviar."); return; }
-      location.href = `mailto:${VENDEDOR.email}?subject=${encodeURIComponent("Reclame aqui: " + (REC_TIPOS.find((t) => t[0] === dados.tipo) || [])[1])}&body=${encodeURIComponent(dados.mensagem + (dados.ativo ? "\n\nAtivo: " + dados.ativo : ""))}`;
+      location.href = `mailto:${VENDEDOR.email}?subject=${encodeURIComponent("Milhão: " + (REC_TIPOS.find((t) => t[0] === dados.tipo) || [])[1])}&body=${encodeURIComponent(dados.mensagem + (dados.ativo ? "\n\nAtivo: " + dados.ativo : ""))}`;
       return;
     }
     const b = $("#rec-enviar"); b.disabled = true; b.textContent = "Enviando…";
@@ -4622,7 +4683,7 @@ rotas.reclame = async (el, arg = "") => {
       const { data, error } = await S.nuvem.from("reclamacoes").insert(dados).select("protocolo").single();
       if (error) throw error;
       $("#rec-caixa").innerHTML = `<div class="rec-feito"><span class="sutil">Recebemos a sua mensagem</span><strong>Protocolo #${esc(data.protocolo)}</strong>
-        <p class="sutil" style="max-width:420px;margin:0 auto 14px">Ela vai ser lida pelo criador do Milhão. A resposta aparece em "Minhas reclamações".</p>
+        <p class="sutil" style="max-width:420px;margin:0 auto 14px">Ela vai ser lida pelo criador do Milhão. A resposta aparece em "Minhas mensagens".</p>
         <button class="btn" id="rec-outra">Enviar outra</button></div>`;
       $("#rec-outra").onclick = () => rotas.reclame(el, "");
       carregarMinhas();
@@ -4665,6 +4726,332 @@ rotas.reclame = async (el, arg = "") => {
     carregarTodas();
   }
 };
+
+/* ---------- Comunidade (Milhão Ouro): quem é Ouro debate com outros investidores, com um nome de perfil ---------- */
+const COM_TEMAS = [["acoes", "Ações"], ["fiis", "FIIs"], ["renda_fixa", "Renda fixa"], ["cripto", "Cripto"], ["estrategia", "Estratégia"], ["iniciantes", "Começando"], ["geral", "Papo geral"]];
+const COM_MOTIVOS = [["ofensa", "Ofensa ou desrespeito"], ["golpe", "Golpe ou promessa de ganho"], ["propaganda", "Propaganda ou spam"], ["dados_pessoais", "Dados pessoais de alguém"], ["outro", "Outro motivo"]];
+const COM_POR_PAGINA = 25;
+const COM_CAMPOS = "id,user_id,tema,ativo,titulo,texto,criado_em,editado_em,atividade_em,respostas,removido,autor:comunidade_perfis(apelido,foto)";
+const ICO_FALA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>';
+const temaNome = (k) => (COM_TEMAS.find((t) => t[0] === k) || [k, k])[1];
+const COM_CORES = ["#0B6E4F", "#2C6E8A", "#7A5410", "#6B4C9A", "#A23B4B", "#3D6B2A", "#8A4F1D", "#245C73"];
+function avatarCom(autor, tam = 36) {
+  const ap = autor?.apelido || "?";
+  if (autor?.foto) return `<img class="avatar av-com" src="${esc(autor.foto)}" alt="" width="${tam}" height="${tam}" style="--tam:${tam}px" loading="lazy">`;
+  let h = 0; for (const c of ap) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  return `<span class="avatar iniciais av-com" style="--tam:${tam}px;background:${COM_CORES[h % COM_CORES.length]};color:#fff" aria-hidden="true">${esc(ap.slice(0, 2).toUpperCase())}</span>`;
+}
+function quando(iso) {
+  const d = new Date(iso), s = (Date.now() - d) / 1000;
+  if (s < 60) return "agora";
+  if (s < 3600) return `há ${Math.floor(s / 60)} min`;
+  if (s < 86400) return `há ${Math.floor(s / 3600)} h`;
+  if (s < 172800) return "ontem";
+  return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: d.getFullYear() === new Date().getFullYear() ? undefined : "numeric" });
+}
+const dataHora = (iso) => { const d = new Date(iso); return d.toLocaleDateString("pt-BR") + " às " + d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }); };
+// texto do usuário: escapado, e os códigos de ativo viram link para a página do ativo
+const textoCom = (t) => esc(t).replace(/\b([A-Z]{4}\d{1,2})\b/g, (m) => S.porTicker?.[m] ? `<a href="#ativo-${m}">${m}</a>` : m);
+// nada de cartão, CPF ou telefone em texto público
+function dadoSensivel(t) {
+  if (/\b(?:\d[ -]?){13,19}\b/.test(t)) return "Parece que tem um número de cartão no texto. Tire antes de publicar.";
+  if (/\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b/.test(t)) return "Parece que tem um CPF no texto. Tire antes de publicar.";
+  if (/(?:\(?\d{2}\)?\s?)9\d{4}[-\s]?\d{4}\b/.test(t)) return "Parece que tem um número de telefone no texto. Combine contato fora da Comunidade.";
+  return "";
+}
+const erroCom = (err) => {
+  const m = String(err?.message || err || "");
+  if (m.includes("limite_diario")) return "Você chegou ao limite de hoje. Tente de novo amanhã.";
+  if (m.includes("comunidade_apelido_unico") || m.includes("duplicate")) return "Esse nome já está em uso. Escolha outro.";
+  if (m.includes("row-level security")) return "Sua conta não pode publicar na Comunidade agora.";
+  return "Não deu para salvar agora. Tente de novo em instantes.";
+};
+const COM_EXEMPLOS = [
+  ["bruna.fii", "fiis", "MXRF11", "Vale reinvestir todo o rendimento de papel?", "Estou com 300 cotas e pensando em dividir entre papel e tijolo. Como vocês fazem?", 14],
+  ["tiago_dividendos", "acoes", "TAEE11", "Transmissoras ainda fazem sentido com a Selic alta?", "Comparei o yield com o Tesouro IPCA e fiquei na dúvida. Quero ouvir quem tem há mais tempo.", 9],
+  ["ana.rf", "renda_fixa", "", "CDB de 110% do CDI ou LCI de 92%?", "Para 2 anos, fiz a conta do IR e deu bem perto. Alguém tem uma planilha melhor?", 6],
+  ["marcos_b3", "estrategia", "", "Quantos ativos vocês têm na carteira?", "Tenho 22 e sinto que é muita coisa para acompanhar. Qual o número ideal para vocês?", 21],
+];
+const itemTopico = (p) => `<a class="com-post${p.removido ? " com-removido" : ""}" href="#comunidade-t-${esc(p.id)}">
+    ${avatarCom(p.autor)}
+    <div><div class="com-meta"><b>@${esc(p.autor?.apelido || "")}</b><span>${quando(p.atividade_em || p.criado_em)}</span><span class="com-tema">${esc(temaNome(p.tema))}</span>${p.ativo ? `<span class="com-ativo">${esc(p.ativo)}</span>` : ""}</div>
+      <h3>${esc(p.titulo)}</h3><p class="com-resumo">${esc(p.texto)}</p>
+      <span class="com-conta">${ICO_FALA}${p.respostas === 1 ? "1 resposta" : `${p.respostas || 0} respostas`}</span></div></a>`;
+
+async function meuPerfilCom() {
+  if (S._perfilCom?.uid === S.usuario.id) return S._perfilCom.dados;
+  const { data, error } = await S.nuvem.from("comunidade_perfis").select("user_id,apelido,foto,bloqueado").eq("user_id", S.usuario.id).maybeSingle();
+  if (error) throw error;
+  S._perfilCom = { uid: S.usuario.id, dados: data || null };
+  return S._perfilCom.dados;
+}
+const podeComunidade = () => ehOuro() || ehCriadorMilhao();
+const sugestaoApelido = () => _semAcento((S.estado?.perfil?.nome || "").split(/\s+/)[0] || "investidor").replace(/[^a-z0-9]/g, "").slice(0, 14) + "_" + Math.floor(10 + Math.random() * 89);
+const regrasCom = () => `<ul class="com-regras"><li>Respeito sempre. Discorde da ideia, nunca da pessoa.</li><li>Aqui é opinião de investidor para investidor, não recomendação de compra ou venda.</li>
+    <li>Nada de promessa de ganho, venda de curso, grupo pago ou link de propaganda.</li><li>Não publique CPF, telefone, número de conta nem dados de outras pessoas.</li>
+    <li>O Milhão pode remover o que fugir das regras e bloquear quem insistir.</li></ul>`;
+
+function dlgDenuncia() {
+  return new Promise((ok) => {
+    const d = document.createElement("dialog"); d.className = "com-dlg";
+    d.innerHTML = `<form method="dialog"><h2>Denunciar</h2><p class="sutil" style="margin:0 0 6px">O que tem de errado? Só a moderação do Milhão vê a denúncia.</p>
+      <div class="com-motivos">${COM_MOTIVOS.map(([k, n], i) => `<label><input type="radio" name="motivo" value="${k}"${i ? "" : " checked"}>${n}</label>`).join("")}</div>
+      <label class="campo">Detalhe, se quiser<textarea name="detalhe" maxlength="500" style="min-height:70px;font:inherit;border:1px solid var(--linha);border-radius:8px;padding:8px 10px;background:var(--branco);color:var(--tinta)"></textarea></label>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px"><button class="btn" value="cancelar">Cancelar</button><button class="btn primario" value="ok">Enviar denúncia</button></div></form>`;
+    document.body.append(d); d.showModal();
+    d.onclose = () => { const f = d.querySelector("form"); ok(d.returnValue === "ok" ? { motivo: f.motivo.value, detalhe: f.detalhe.value.trim() || null } : null); d.remove(); };
+  });
+}
+
+rotas.comunidade = async (el, arg = "") => {
+  const a = String(arg || "");
+  const cab = (extra = "") => `<div class="cabeca"><div><h1>Comunidade</h1><p class="sutil" style="margin:6px 0 0">Debata com outros investidores do Milhão Ouro: carteira, dividendos, estratégia e o que mais aparecer.</p></div>${extra}</div>`;
+  if (!S.nuvem || !S.usuario) {
+    el.innerHTML = cab() + `<div class="painel vazio"><h3>Entre na sua conta</h3><p>A Comunidade precisa de uma conta do Milhão, para cada pessoa ter o seu nome de perfil.</p></div>`;
+    return;
+  }
+  // plano Grátis: prévia borrada e o convite
+  if (!podeComunidade()) {
+    el.innerHTML = cab() + `<div class="com-trava"><div class="com-lista" aria-hidden="true">${COM_EXEMPLOS.map(([ap, tema, ativo, titulo, texto, n], i) =>
+        itemTopico({ id: "x" + i, autor: { apelido: ap }, tema, ativo, titulo, texto, respostas: n, atividade_em: new Date(Date.now() - (i + 1) * 5400e3).toISOString() })).join("").replace(/<a /g, "<div ").replace(/<\/a>/g, "</div>")}</div>
+      <div class="com-convite"><div class="painel"><h2>${ICO_CADEADO} A Comunidade é do Milhão Ouro</h2>
+        <ul class="ir-lista"><li>Crie o seu nome de perfil e debata com outros investidores</li><li>Abra tópicos sobre um ativo, uma estratégia ou uma dúvida</li><li>Moderação do próprio Milhão, sem propaganda e sem golpe</li></ul>
+        <div class="acoes" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn dourado" id="com-ouro">Conhecer o Milhão Ouro</button><span class="fraco">${brl(PLANO_OURO.preco)} por mês, cancele quando quiser.</span></div></div></div></div>`;
+    $("#com-ouro").onclick = () => ir("#perfil");
+    return;
+  }
+  el.innerHTML = cab() + `<p class="fraco">Carregando…</p>`;
+  let eu;
+  try { eu = await meuPerfilCom(); } catch (err) {
+    console.warn(err);
+    el.innerHTML = cab() + `<div class="painel vazio"><h3>A Comunidade não abriu agora</h3><p>Tente de novo em instantes.</p></div>`;
+    return;
+  }
+  if (!location.hash.startsWith("#comunidade")) return;
+  if (!eu) return telaPerfilCom(el, cab, a);
+  if (a.startsWith("t-")) return telaTopico(el, eu, a.slice(2));
+  return telaListaCom(el, eu, cab, a);
+};
+
+/* primeira vez: escolher o nome de perfil */
+function telaPerfilCom(el, cab, arg, atual = null) {
+  const foto = fotoPerfil();
+  el.innerHTML = cab() + `<div class="com-grade"><section class="painel"><form class="com-form" id="com-perfil" novalidate>
+      <h2 style="margin:0">${atual ? "Trocar o seu nome de perfil" : "Escolha o seu nome de perfil"}</h2>
+      <p class="sutil" style="margin:0">É assim que os outros vão te ver nos tópicos e respostas. Seu nome e e-mail da conta não aparecem.</p>
+      <label class="campo">Nome de perfil<div class="com-arroba"><span>@</span><input type="text" name="apelido" maxlength="20" autocomplete="off" spellcheck="false" value="${esc(atual?.apelido || sugestaoApelido())}"></div>
+        <small class="fraco">De 3 a 20 letras, números, _ ou ponto. Sem espaço e sem acento.</small></label>
+      ${foto ? `<label class="imp-check"><input type="checkbox" name="foto"${!atual || atual.foto ? " checked" : ""}><span>Mostrar a minha foto do Milhão</span></label>` : ""}
+      ${atual ? "" : `<label class="imp-check"><input type="checkbox" name="regras"><span>Li e sigo as regras da Comunidade.</span></label>`}
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn primario" type="submit" id="com-perfil-ok">${atual ? "Salvar" : "Entrar na Comunidade"}</button>${atual ? `<button class="btn" type="button" id="com-perfil-volta">Cancelar</button>` : ""}</div>
+    </form></section><aside class="com-lado"><section class="painel"><h2>Regras da Comunidade</h2>${regrasCom()}</section></aside></div>`;
+  const f = $("#com-perfil");
+  f.apelido.oninput = () => { const p = f.apelido.selectionStart; f.apelido.value = _semAcento(f.apelido.value).replace(/[^A-Za-z0-9_.]/g, ""); f.apelido.setSelectionRange(p, p); };
+  if ($("#com-perfil-volta")) $("#com-perfil-volta").onclick = () => rotas.comunidade(el, arg);
+  f.onsubmit = async (e) => {
+    e.preventDefault();
+    const apelido = f.apelido.value.trim();
+    if (!/^[A-Za-z0-9_.]{3,20}$/.test(apelido)) { aviso("Use de 3 a 20 letras, números, _ ou ponto."); f.apelido.focus(); return; }
+    if (!atual && !f.regras.checked) { aviso("Marque que você leu as regras da Comunidade."); return; }
+    const dados = { apelido, foto: foto && f.foto?.checked ? foto.split("?")[0] : null };
+    const b = $("#com-perfil-ok"); b.disabled = true;
+    const q = atual ? S.nuvem.from("comunidade_perfis").update(dados).eq("user_id", S.usuario.id) : S.nuvem.from("comunidade_perfis").insert(dados);
+    const { error } = await q;
+    b.disabled = false;
+    if (error) { aviso(erroCom(error)); return; }
+    S._perfilCom = null;
+    aviso(atual ? "Nome de perfil salvo." : `Bem-vindo à Comunidade, @${apelido}!`);
+    rotas.comunidade(el, arg);
+  };
+}
+
+/* lista de tópicos */
+async function telaListaCom(el, eu, cab, arg) {
+  let tema = "", ativo = "", pagina = 0;
+  if (arg.startsWith("ativo-")) ativo = decodeURIComponent(arg.slice(6)).toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 8);
+  if (arg.startsWith("tema-") && COM_TEMAS.some((t) => t[0] === arg.slice(5))) tema = arg.slice(5);
+  const dono = ehCriadorMilhao();
+  el.innerHTML = cab(`<div class="acoes"><button class="btn primario" id="com-novo">Novo tópico</button></div>`) + `<div class="com-grade">
+    <div><div id="com-form-novo"></div>
+      <div class="com-barra"><div class="chips" role="group" aria-label="Assunto"><button class="chip" data-tema="" aria-pressed="${!tema}">Todos</button>${COM_TEMAS.map(([k, n]) => `<button class="chip" data-tema="${k}" aria-pressed="${tema === k}">${n}</button>`).join("")}</div>
+        <input type="search" id="com-ativo" placeholder="Ativo" aria-label="Filtrar por ativo" maxlength="8" value="${esc(ativo)}"></div>
+      <div class="com-lista" id="com-lista"><p class="fraco">Carregando…</p></div>
+      <div style="text-align:center;margin-top:12px"><button class="btn oculto" id="com-mais">Ver mais tópicos</button></div></div>
+    <aside class="com-lado">
+      <section class="painel"><div class="com-eu">${avatarCom(eu, 40)}<div><b>@${esc(eu.apelido)}</b><button class="btn texto" style="padding:0;font-size:13px" id="com-trocar">Trocar nome de perfil</button></div></div>
+        ${eu.bloqueado ? `<p class="fraco" style="margin:10px 0 0">Sua conta foi bloqueada pela moderação: você ainda lê, mas não publica.</p>` : ""}</section>
+      <section class="painel"><h2>Regras da Comunidade</h2>${regrasCom()}</section>
+      ${dono ? `<section class="painel"><h2>Denúncias abertas</h2><div id="com-denuncias"><p class="fraco">Carregando…</p></div></section>` : ""}
+    </aside></div>`;
+  $("#com-trocar").onclick = () => telaPerfilCom(el, (x) => cab(x), arg, eu);
+  $("#com-novo").onclick = () => formTopico($("#com-form-novo"), eu, { ativo });
+  const carregar = async (mais = false) => {
+    if (!mais) pagina = 0;
+    let q = S.nuvem.from("comunidade_posts").select(COM_CAMPOS).order("atividade_em", { ascending: false }).range(pagina * COM_POR_PAGINA, pagina * COM_POR_PAGINA + COM_POR_PAGINA - 1);
+    if (tema) q = q.eq("tema", tema);
+    if (ativo) q = q.eq("ativo", ativo);
+    const { data, error } = await q, box = $("#com-lista");
+    if (!box) return;
+    if (error) { box.innerHTML = `<p class="sutil">Não deu para carregar os tópicos. Tente de novo em instantes.</p>`; return; }
+    const html = data.map(itemTopico).join("");
+    if (mais) box.insertAdjacentHTML("beforeend", html);
+    else box.innerHTML = html || `<div class="painel vazio"><h3>${ativo || tema ? "Nenhum tópico com esse filtro" : "Ninguém abriu um tópico ainda"}</h3><p>Que tal começar a conversa?</p>
+      <div class="acoes"><button class="btn primario" id="com-novo-vazio">Abrir um tópico${ativo ? " sobre " + esc(ativo) : ""}</button></div></div>`;
+    if ($("#com-novo-vazio")) $("#com-novo-vazio").onclick = () => formTopico($("#com-form-novo"), eu, { ativo, tema });
+    $("#com-mais").classList.toggle("oculto", data.length < COM_POR_PAGINA);
+  };
+  $$("[data-tema]").forEach((b) => b.onclick = () => { tema = b.dataset.tema; $$("[data-tema]").forEach((x) => x.setAttribute("aria-pressed", x === b)); carregar(); });
+  let t; $("#com-ativo").oninput = (e) => { clearTimeout(t); t = setTimeout(() => { ativo = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ""); carregar(); }, 350); };
+  $("#com-mais").onclick = () => { pagina++; carregar(true); };
+  carregar();
+  if (dono) carregarDenuncias();
+}
+
+/* formulário de tópico novo (ou edição) */
+function formTopico(box, eu, ini = {}, aoSalvar = null) {
+  if (eu.bloqueado) { aviso("Sua conta está bloqueada para publicar na Comunidade."); return; }
+  const editando = !!ini.id;
+  box.innerHTML = `<section class="painel" style="margin-bottom:14px"><form class="com-form" id="com-topico" novalidate>
+      ${editando ? "" : `<h2 style="margin:0">Novo tópico</h2>`}
+      <div class="linha2"><label class="campo">Assunto<select name="tema">${COM_TEMAS.map(([k, n]) => `<option value="${k}"${(ini.tema || (ini.ativo ? (S.porTicker?.[ini.ativo]?.tipo === "fii" ? "fiis" : "acoes") : "geral")) === k ? " selected" : ""}>${n}</option>`).join("")}</select></label>
+        <label class="campo">Ativo, se for sobre um<input type="text" name="ativo" maxlength="8" autocomplete="off" placeholder="Ex.: PETR4" value="${esc(ini.ativo || "")}"></label></div>
+      <label class="campo">Título<input type="text" name="titulo" maxlength="120" required placeholder="Ex.: Vale a pena reinvestir os dividendos de FII?" value="${esc(ini.titulo || "")}"></label>
+      <label class="campo">Texto<textarea name="texto" maxlength="5000" required placeholder="Conte o contexto, os números e a sua dúvida ou opinião.">${esc(ini.texto || "")}</textarea></label>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn primario" type="submit" id="com-topico-ok">${editando ? "Salvar" : "Publicar"}</button><button class="btn" type="button" id="com-topico-cancela">Cancelar</button>
+        <small class="fraco">Opinião não é recomendação de investimento.</small></div></form></section>`;
+  const f = $("#com-topico");
+  if (!editando) f.titulo.focus();
+  f.ativo.oninput = () => { f.ativo.value = f.ativo.value.toUpperCase().replace(/[^A-Z0-9]/g, ""); };
+  $("#com-topico-cancela").onclick = () => { box.innerHTML = ""; if (aoSalvar) aoSalvar(null); };
+  f.onsubmit = async (e) => {
+    e.preventDefault();
+    const dados = { tema: f.tema.value, ativo: f.ativo.value || null, titulo: f.titulo.value.trim(), texto: f.texto.value.trim() };
+    if (dados.titulo.length < 5) { aviso("Escreva um título com pelo menos 5 letras."); f.titulo.focus(); return; }
+    if (!dados.texto) { aviso("Escreva o texto do tópico."); f.texto.focus(); return; }
+    if (dados.ativo && !/^[A-Z0-9]{4,8}$/.test(dados.ativo)) { aviso("Confira o código do ativo, como PETR4."); f.ativo.focus(); return; }
+    const sens = dadoSensivel(dados.titulo + "\n" + dados.texto); if (sens) { aviso(sens); return; }
+    const b = $("#com-topico-ok"); b.disabled = true;
+    const r = editando ? await S.nuvem.from("comunidade_posts").update(dados).eq("id", ini.id).select("id").single()
+      : await S.nuvem.from("comunidade_posts").insert(dados).select("id").single();
+    b.disabled = false;
+    if (r.error) { aviso(erroCom(r.error)); return; }
+    aviso(editando ? "Tópico salvo." : "Tópico publicado.");
+    if (aoSalvar) aoSalvar(r.data); else ir(`#comunidade-t-${r.data.id}`);
+  };
+}
+
+/* um tópico com as respostas */
+async function telaTopico(el, eu, id) {
+  if (!/^[0-9a-f-]{36}$/.test(id)) return ir("#comunidade");
+  const dono = ehCriadorMilhao();
+  el.innerHTML = `<p><a href="#comunidade" class="link-voltar">← Comunidade</a></p><p class="fraco">Carregando…</p>`;
+  const [rp, rr] = await Promise.all([
+    S.nuvem.from("comunidade_posts").select(COM_CAMPOS).eq("id", id).maybeSingle(),
+    S.nuvem.from("comunidade_respostas").select("id,user_id,texto,criado_em,editado_em,removido,autor:comunidade_perfis(apelido,foto)").eq("post_id", id).order("criado_em").limit(500),
+  ]);
+  if (location.hash !== `#comunidade-t-${id}`) return;
+  const p = rp.data;
+  if (rp.error || !p) {
+    el.innerHTML = `<p><a href="#comunidade" class="link-voltar">← Comunidade</a></p><div class="painel vazio"><h3>Esse tópico não existe mais</h3><p>Ele pode ter sido apagado pelo autor ou removido pela moderação.</p></div>`;
+    return;
+  }
+  const resps = rr.data || [];
+  const acoes = (item, tipo) => {
+    const meu = item.user_id === S.usuario.id, bt = [];
+    if (meu && !item.removido && !eu.bloqueado) bt.push(`<button class="btn texto" data-editar="${tipo}">Editar</button>`);
+    if (meu || dono) bt.push(`<button class="btn texto" data-apagar="${tipo}">Apagar</button>`);
+    if (!meu) bt.push(`<button class="btn texto" data-denunciar="${tipo}">Denunciar</button>`);
+    if (dono) bt.push(`<button class="btn texto" data-moderar="${tipo}" data-acao="${item.removido ? "restaurar" : "remover"}">${item.removido ? "Restaurar" : "Remover"}</button>`,
+      ...(meu ? [] : [`<button class="btn texto" data-bloquear="${esc(item.user_id)}">Bloquear @${esc(item.autor?.apelido || "")}</button>`]));
+    return `<div class="com-acoes">${bt.join("")}</div>`;
+  };
+  const editado = (x) => x.editado_em ? ` · editado` : "";
+  el.innerHTML = `<p><a href="#comunidade" class="link-voltar">← Comunidade</a></p><div class="com-grade"><div class="com-fio">
+      <article class="painel${p.removido ? " com-removido" : ""}" data-item="${esc(p.id)}" data-tipo="post"><div id="com-post-corpo">
+        <div class="com-meta">${avatarCom(p.autor, 32)}<b>@${esc(p.autor?.apelido || "")}</b><span>${dataHora(p.criado_em)}${editado(p)}</span><a class="com-tema" href="#comunidade-tema-${esc(p.tema)}">${esc(temaNome(p.tema))}</a>${p.ativo ? `<a class="com-ativo" href="#ativo-${esc(p.ativo)}">${esc(p.ativo)}</a>` : ""}</div>
+        <h1>${esc(p.titulo)}</h1><p class="com-texto">${textoCom(p.texto)}</p>${acoes(p, "post")}</div></article>
+      <section class="painel"><h2 style="margin-top:0">${resps.length === 1 ? "1 resposta" : `${resps.length} respostas`}</h2>
+        <div id="com-resps">${resps.map((r) => `<div class="com-resp${r.removido ? " com-removido" : ""}" data-item="${esc(r.id)}" data-tipo="resposta">${avatarCom(r.autor)}<div>
+          <div class="com-meta"><b>@${esc(r.autor?.apelido || "")}</b><span>${quando(r.criado_em)}${editado(r)}</span></div><p class="com-texto" style="font-size:14.5px">${textoCom(r.texto)}</p>${acoes(r, "resposta")}</div></div>`).join("") || `<p class="sutil" style="margin:0">Ninguém respondeu ainda. Seja o primeiro.</p>`}</div>
+        ${p.removido || eu.bloqueado ? "" : `<form class="com-form" id="com-responder" style="margin-top:16px" novalidate><label class="campo">Sua resposta<textarea name="texto" maxlength="3000" placeholder="Escreva com respeito e, se puder, com números."></textarea></label>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn primario" type="submit" id="com-responder-ok">Responder</button><small class="fraco">Respondendo como @${esc(eu.apelido)}</small></div></form>`}
+      </section></div>
+    <aside class="com-lado"><section class="painel"><h2>Regras da Comunidade</h2>${regrasCom()}</section></aside></div>`;
+  const recarregar = () => telaTopico(el, eu, id);
+  const itemDe = (bt) => { const art = bt.closest("[data-item]"); return { id: art.dataset.item, tipo: art.dataset.tipo, art }; };
+  const tabela = (tipo) => tipo === "post" ? "comunidade_posts" : "comunidade_respostas";
+  if ($("#com-responder")) $("#com-responder").onsubmit = async (e) => {
+    e.preventDefault();
+    const texto = e.target.texto.value.trim();
+    if (!texto) { aviso("Escreva a sua resposta."); return; }
+    const sens = dadoSensivel(texto); if (sens) { aviso(sens); return; }
+    const b = $("#com-responder-ok"); b.disabled = true;
+    const { error } = await S.nuvem.from("comunidade_respostas").insert({ post_id: id, texto });
+    b.disabled = false;
+    if (error) { aviso(erroCom(error)); return; }
+    aviso("Resposta publicada."); recarregar();
+  };
+  $$("[data-editar]").forEach((bt) => bt.onclick = () => {
+    const { id: iid, tipo, art } = itemDe(bt);
+    if (tipo === "post") return formTopico($("#com-post-corpo"), eu, p, (ok) => recarregar());
+    const r = resps.find((x) => x.id === iid), alvo = art.querySelector(".com-texto");
+    alvo.outerHTML = `<form class="com-form" data-ed><textarea maxlength="3000">${esc(r.texto)}</textarea><div style="display:flex;gap:8px"><button class="btn primario" type="submit">Salvar</button><button class="btn" type="button" data-ed-cancela>Cancelar</button></div></form>`;
+    bt.closest(".com-acoes").classList.add("oculto");
+    const f = art.querySelector("[data-ed]");
+    f.querySelector("[data-ed-cancela]").onclick = recarregar;
+    f.onsubmit = async (e) => {
+      e.preventDefault();
+      const texto = f.querySelector("textarea").value.trim(); if (!texto) return;
+      const sens = dadoSensivel(texto); if (sens) { aviso(sens); return; }
+      const { error } = await S.nuvem.from("comunidade_respostas").update({ texto }).eq("id", iid);
+      if (error) { aviso(erroCom(error)); return; }
+      aviso("Resposta salva."); recarregar();
+    };
+  });
+  $$("[data-apagar]").forEach((bt) => bt.onclick = async () => {
+    const { id: iid, tipo } = itemDe(bt);
+    const ok = await perguntar({ titulo: tipo === "post" ? "Apagar este tópico?" : "Apagar esta resposta?", texto: tipo === "post" ? "O tópico e todas as respostas somem para sempre." : "A resposta some para sempre.", botao: "Apagar", perigo: true });
+    if (!ok) return;
+    const { error } = await S.nuvem.from(tabela(tipo)).delete().eq("id", iid);
+    if (error) { aviso(erroCom(error)); return; }
+    aviso("Apagado."); if (tipo === "post") ir("#comunidade"); else recarregar();
+  });
+  $$("[data-denunciar]").forEach((bt) => bt.onclick = async () => {
+    const { id: iid, tipo } = itemDe(bt), d = await dlgDenuncia();
+    if (!d) return;
+    const { error } = await S.nuvem.from("comunidade_denuncias").insert({ ...d, ...(tipo === "post" ? { post_id: iid } : { resposta_id: iid }) });
+    aviso(error ? erroCom(error) : "Denúncia enviada. Obrigado por cuidar da Comunidade.");
+  });
+  $$("[data-moderar]").forEach((bt) => bt.onclick = async () => {
+    const { id: iid, tipo } = itemDe(bt);
+    const { error } = await S.nuvem.rpc("comunidade_moderar", { tipo, alvo: iid, acao: bt.dataset.acao });
+    if (error) { aviso("Não deu para moderar."); return; }
+    aviso(bt.dataset.acao === "remover" ? "Removido." : "Restaurado."); recarregar();
+  });
+  $$("[data-bloquear]").forEach((bt) => bt.onclick = async () => {
+    if (!await perguntar({ titulo: "Bloquear esta pessoa?", texto: "Ela continua lendo a Comunidade, mas não publica mais tópicos nem respostas.", botao: "Bloquear", perigo: true })) return;
+    const { error } = await S.nuvem.rpc("comunidade_moderar", { tipo: "perfil", alvo: bt.dataset.bloquear, acao: "bloquear" });
+    aviso(error ? "Não deu para bloquear." : "Bloqueado.");
+  });
+}
+
+/* painel do criador: denúncias abertas */
+async function carregarDenuncias() {
+  const box = $("#com-denuncias"); if (!box) return;
+  const { data, error } = await S.nuvem.from("comunidade_denuncias").select("id,motivo,detalhe,criado_em,post_id,post:comunidade_posts(titulo),resposta:comunidade_respostas(post_id,texto)")
+    .eq("resolvida", false).order("criado_em", { ascending: false }).limit(50);
+  if (error) { box.innerHTML = `<p class="fraco">Não deu para carregar.</p>`; return; }
+  box.innerHTML = data.length ? data.map((d) => {
+    const pid = d.post_id || d.resposta?.post_id;
+    return `<div class="rec-item" data-den="${esc(d.id)}"><div class="rec-topo"><b>${esc((COM_MOTIVOS.find((m) => m[0] === d.motivo) || [0, d.motivo])[1])}</b><span>${quando(d.criado_em)}</span></div>
+      <p>${esc(d.post?.titulo || (d.resposta ? "Resposta: " + d.resposta.texto.slice(0, 90) : "Conteúdo apagado"))}</p>${d.detalhe ? `<small class="fraco">${esc(d.detalhe)}</small>` : ""}
+      <div style="display:flex;gap:8px">${pid ? `<a class="btn" href="#comunidade-t-${esc(pid)}">Ver</a>` : ""}<button class="btn" data-resolver>Resolvida</button></div></div>`;
+  }).join("") : `<p class="fraco" style="margin:0">Nenhuma denúncia aberta.</p>`;
+  box.querySelectorAll("[data-resolver]").forEach((bt) => bt.onclick = async () => {
+    const { error } = await S.nuvem.rpc("comunidade_moderar", { tipo: "denuncia", alvo: bt.closest("[data-den]").dataset.den, acao: "resolver" });
+    if (!error) carregarDenuncias(); else aviso("Não deu para salvar.");
+  });
+}
 
 /* ---------- conferência dos dados: o que o robô conferiu, corrigiu ou segurou hoje ---------- */
 function avisoConferencia(d) {
@@ -4728,7 +5115,7 @@ rotas.conferencia = async (el) => {
     <div class="painel" style="margin-top:16px"><div class="cabeca" style="margin-bottom:10px"><h2 style="margin:0">Tudo o que foi ajustado hoje</h2>
       <div class="chips" style="margin:0">${filtros.map(([k, n]) => `<button class="chip" data-cf="${k}" aria-pressed="${UI.confFiltro === k}">${n}</button>`).join("")}</div></div>
       <div id="conf-tab"></div></div>
-    <p class="fraco" style="margin-top:14px">Achou algum dado errado mesmo assim? <a href="#reclame">Conte para a gente no Reclame aqui</a>.</p>`;
+    <p class="fraco" style="margin-top:14px">Achou algum dado errado mesmo assim? <a href="#reclame">Conte para a gente</a>.</p>`;
   const tabela = () => {
     const lista = (c.itens || []).filter((i) => UI.confFiltro === "todos" ? i.nivel !== "aviso" : i.nivel === UI.confFiltro).slice(0, 400);
     $("#conf-tab").innerHTML = lista.length ? `<div style="overflow:auto"><table><thead><tr><th class="esq">Onde</th><th class="esq">Dado</th><th class="esq">O que houve</th></tr></thead><tbody>${lista.map((i) =>
@@ -4922,20 +5309,20 @@ function planoHTML() {
       : p.status === "pix" ? `Pago no Pix. O Ouro vale até ${ate} e não renova sozinho: para continuar, pague mais 30 dias antes de acabar.` : `Vale até ${ate}.`;
     return `<div class="plano-topo"><span class="selo-ouro">Milhão Ouro</span><strong>${p.status === "criador" ? "Vitalício" : p.status === "pix" ? `${brl(PLANO_OURO.preco)} por 30 dias` : `${brl(PLANO_OURO.preco)} por mês`}</strong></div>
       <p>${linha}</p>
-      <ul class="plano-lista">${["Carteiras sem limite", "Consolidador: renda fixa, Tesouro, fundos e cripto junto com a bolsa", "Imposto de Renda: DARF do mês, bens e direitos e proventos", "Análise avançada: médias, Bollinger, IFR, Medir e Marcar preço", "Filtrão sem limite de perguntas", "Logo dourada"].map((t) => `<li>${t}</li>`).join("")}</ul>
+      <ul class="plano-lista">${["Carteiras sem limite", "Consolidador: renda fixa, Tesouro, fundos e cripto junto com a bolsa", "Imposto de Renda: DARF do mês, bens e direitos e proventos", "Análise avançada: médias, Bollinger, IFR, Medir e Marcar preço", "Filtrão sem limite de perguntas", "Comunidade para debater com outros investidores", "Logo dourada"].map((t) => `<li>${t}</li>`).join("")}</ul>
       ${p.status === "ativa" ? `<button class="btn" id="cancelar-ouro">Cancelar assinatura</button>` : p.status === "pix" ? botoesCompra(true) : ""}`;
   }
   if (emTeste()) {
     const fim = fimDoTeste(), dias = Math.max(1, Math.ceil((fim - new Date()) / 864e5));
     return `<div class="plano-topo"><span class="selo-ouro">Teste grátis do Ouro</span><strong>${dias === 1 ? "Último dia" : `Faltam ${dias} dias`}</strong></div>
       <p>Você está usando o <b>Milhão Ouro</b> de graça até ${dataBR(fim.toISOString().slice(0, 10))}. Depois a conta volta sozinha para o plano Grátis, <b>sem nenhuma cobrança</b>.</p>
-      <ul class="plano-lista">${["Carteiras sem limite", "Consolidador: renda fixa, Tesouro, fundos e cripto junto com a bolsa", "Imposto de Renda: DARF do mês, bens e direitos e proventos", "Análise avançada: médias, Bollinger, IFR, Medir e Marcar preço", "Filtrão sem limite de perguntas", "Logo dourada"].map((t) => `<li>${t}</li>`).join("")}</ul>
+      <ul class="plano-lista">${["Carteiras sem limite", "Consolidador: renda fixa, Tesouro, fundos e cripto junto com a bolsa", "Imposto de Renda: DARF do mês, bens e direitos e proventos", "Análise avançada: médias, Bollinger, IFR, Medir e Marcar preço", "Filtrão sem limite de perguntas", "Comunidade para debater com outros investidores", "Logo dourada"].map((t) => `<li>${t}</li>`).join("")}</ul>
       <p class="plano-preco">Para continuar com o Ouro depois do teste: <strong>${brl(PLANO_OURO.preco)}</strong> por mês, no cartão ou no Pix.</p>
       ${botoesCompra()}`;
   }
   const pendente = p.plano === "ouro" && p.status === "pendente";
   const linhas = [["Carteiras", "1", "Sem limite"], ["Gráfico de candles, volume e suas operações", true, true], ["Preço justo e preço teto", true, true],
-    ["Médias, Bollinger, IFR, Medir e Marcar preço", false, true], ["Consolidador de carteira", false, true], ["Imposto de Renda", false, true], ["Perguntas ao Filtrão", `${LIMITES_GRATIS.filtrao} por dia`, "Sem limite"], ["Logo dourada", false, true]];
+    ["Médias, Bollinger, IFR, Medir e Marcar preço", false, true], ["Consolidador de carteira", false, true], ["Imposto de Renda", false, true], ["Perguntas ao Filtrão", `${LIMITES_GRATIS.filtrao} por dia`, "Sem limite"], ["Comunidade", false, true], ["Logo dourada", false, true]];
   const cel = (v) => v === true ? '<span class="sim" aria-label="Sim">✓</span>' : v === false ? '<span class="nao" aria-label="Não">–</span>' : esc(v);
   return `<div class="plano-topo"><span class="selo-gratis">Plano Grátis</span></div>
     <p>${fimDoTeste() ? "Seu teste grátis de 7 dias do Ouro acabou e a conta voltou para o Grátis, sem cobrança." : "Você usa o Milhão de graça."} Com o <b>Milhão Ouro</b> a logo fica dourada e você libera tudo:</p>
@@ -5092,22 +5479,22 @@ const rodapeSite = () => `<footer class="rodape-site">
 function telaDocumento(qual) {
   const quem = vendasAbertas() ? `${esc(VENDEDOR.nome)}, ${esc(VENDEDOR.documento)}, contato: <a href="mailto:${esc(VENDEDOR.email)}">${esc(VENDEDOR.email)}</a>` : "";
   const contato = VENDEDOR.email ? `pelo e-mail <a href="mailto:${esc(VENDEDOR.email)}">${esc(VENDEDOR.email)}</a>` : "pelo e-mail de contato informado nesta página";
-  const termos = `<h1>Termos de uso e assinatura</h1><p class="fraco">Última atualização: 17/11/2026</p>
+  const termos = `<h1>Termos de uso e assinatura</h1><p class="fraco">Última atualização: 23/11/2026</p>
     ${quem ? `<p><b>Quem oferece o Milhão:</b> ${quem}.</p>` : ""}
     <h2>1. O que é o Milhão</h2><p>O Milhão é uma ferramenta para organizar carteiras de ações e FIIs da B3, ver cotações, proventos, números das empresas e gráficos. Os dados vêm de fontes públicas da B3 e da CVM, com cotações de fechamento, e podem ter atrasos ou erros. O site foi desenvolvido pela ${DESENVOLVEDORA}, empresa de propriedade de ${esc(VENDEDOR.nome || "Luiz Henrique Santos Barboza")}.</p>
     <h2>2. Não é recomendação de investimento</h2><p>Nada no Milhão é recomendação de compra ou venda nem consultoria. Preço justo, preço teto e indicadores são cálculos automáticos feitos com dados públicos e premissas que você pode mudar. As respostas do Filtrão são geradas por inteligência artificial e podem conter erros. As decisões de investimento são suas.</p>
     <h2>3. Sua conta</h2><p>Você é responsável pelo seu e-mail e pela sua senha. Você pode excluir a conta a qualquer momento no Perfil.</p>
-    <h2>4. Planos</h2><p>O plano <b>Grátis</b> não tem custo. O <b>Milhão Ouro</b> custa ${brl(PLANO_OURO.preco)} por mês e libera: carteiras sem limite, o Consolidador de carteira (renda fixa, Tesouro Direto, fundos, criptomoedas e outros bens), o cálculo do Imposto de Renda, Análise avançada (médias móveis, Bollinger, IFR, Medir e Marcar preço), perguntas sem limite ao Filtrão e a logo dourada.</p>
+    <h2>4. Planos</h2><p>O plano <b>Grátis</b> não tem custo. O <b>Milhão Ouro</b> custa ${brl(PLANO_OURO.preco)} por mês e libera: carteiras sem limite, o Consolidador de carteira (renda fixa, Tesouro Direto, fundos, criptomoedas e outros bens), o cálculo do Imposto de Renda, Análise avançada (médias móveis, Bollinger, IFR, Medir e Marcar preço), perguntas sem limite ao Filtrão, a Comunidade e a logo dourada.</p>
     <h2>5. Teste grátis</h2><p>Toda conta ganha <b>7 dias de Milhão Ouro de graça</b>, sem cartão. Quando o teste acaba, a conta volta sozinha para o plano Grátis, sem nenhuma cobrança. Só é cobrado quem assinar.</p>
     <h2>6. Formas de pagamento e renovação</h2><p>Os pagamentos são feitos pelo Mercado Pago, de duas formas:</p><ul><li><b>Cartão:</b> a assinatura <b>renova automaticamente todo mês</b> até você cancelar.</li><li><b>Pix:</b> cada pagamento libera <b>30 dias</b> de Milhão Ouro, sem renovação automática. Se pagar de novo antes de acabar, os dias se somam. Quando os dias acabam, a conta volta sozinha para o plano Grátis.</li></ul><p>O Milhão não recebe nem guarda os dados do seu cartão ou da sua conta bancária. Se o preço mudar, você é avisado com pelo menos 30 dias de antecedência.</p>
     <h2>7. Cancelamento</h2><p>No cartão, você cancela quando quiser no Perfil, em "Cancelar assinatura", ou no app do Mercado Pago. A renovação para na hora e você continua com o Ouro até o fim do período já pago. No Pix não há o que cancelar: basta não pagar de novo. Não há multa.</p>
     <h2>8. Direito de arrependimento</h2><p>Pelo artigo 49 do Código de Defesa do Consumidor, você pode desistir da assinatura em até 7 dias depois da primeira contratação e receber o valor pago de volta, ${contato}.</p>
-    <h2>9. Uso correto</h2><p>Não é permitido tentar burlar os limites do plano, copiar o site ou os dados em massa, ou usar o Filtrão para outros fins. Contas que fizerem isso podem ser suspensas.</p>
+    <h2>9. Uso correto</h2><p>Não é permitido tentar burlar os limites do plano, copiar o site ou os dados em massa, ou usar o Filtrão para outros fins. Contas que fizerem isso podem ser suspensas.</p><p><b>Comunidade:</b> cada pessoa responde pelo que publica. O que aparece lá é opinião de usuários, não recomendação de investimento do Milhão. Não é permitido ofender, divulgar golpe, promessa de ganho ou propaganda, nem publicar dados pessoais de ninguém. O Milhão pode remover publicações fora das regras e bloquear quem insistir.</p>
     <h2>10. Mudanças nestes termos</h2><p>Se estes termos mudarem, a data acima é atualizada e mudanças importantes são avisadas no site.</p>
     <h2>11. Lei e foro</h2><p>Valem as leis do Brasil. Fica eleito o foro do seu domicílio, como prevê o Código de Defesa do Consumidor.</p>`;
-  const privacidade = `<h1>Política de privacidade</h1><p class="fraco">Última atualização: 17/11/2026</p>
+  const privacidade = `<h1>Política de privacidade</h1><p class="fraco">Última atualização: 23/11/2026</p>
     ${quem ? `<p><b>Responsável pelos dados:</b> ${quem}.</p>` : ""}
-    <h2>1. O que guardamos</h2><ul><li>Nome, e-mail e foto de perfil (se você colocar).</li><li>Suas carteiras, lançamentos e preferências (como modo escuro e marcas de preço).</li><li>Situação do seu plano (grátis ou Ouro), o registro dos pagamentos (valor, data e número do pagamento no Mercado Pago) e a contagem diária de perguntas ao Filtrão.</li></ul>
+    <h2>1. O que guardamos</h2><ul><li>Nome, e-mail e foto de perfil (se você colocar).</li><li>Se você entrar na Comunidade: o nome de perfil que escolher e o que publicar lá, que ficam visíveis para os outros membros. Seu nome e e-mail da conta não aparecem.</li><li>Suas carteiras, lançamentos e preferências (como modo escuro e marcas de preço).</li><li>Situação do seu plano (grátis ou Ouro), o registro dos pagamentos (valor, data e número do pagamento no Mercado Pago) e a contagem diária de perguntas ao Filtrão.</li></ul>
     <h2>2. Para que usamos</h2><p>Só para fazer o Milhão funcionar: entrar na conta, mostrar suas carteiras em qualquer aparelho, liberar os recursos do seu plano e responder suas perguntas. Não vendemos seus dados e não mostramos anúncios.</p>
     <h2>3. Com quem os dados passam</h2><ul><li><b>Supabase</b>: login e banco de dados onde ficam sua conta e carteiras.</li><li><b>Google (Gemini)</b>: quando você pergunta ao Filtrão, a pergunta e um resumo da carteira e da tela vão para a IA do Google. Na camada gratuita, o Google pode usar esse conteúdo para melhorar os produtos dele. Não envie dados pessoais nas perguntas.</li><li><b>Mercado Pago</b>: processa os pagamentos do Milhão Ouro, no cartão ou no Pix. Os dados do cartão e da sua conta bancária ficam só com ele.</li><li><b>Cloudflare e GitHub</b>: hospedam o site.</li></ul>
     <h2>4. Seus direitos (LGPD)</h2><p>Você pode ver e corrigir seus dados no Perfil, baixar suas carteiras em "Exportar backup" e excluir tudo em "Excluir minha conta". Para qualquer outro pedido sobre seus dados, fale ${contato}.</p>
