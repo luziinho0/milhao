@@ -2477,11 +2477,13 @@ function acharCabecalho(linhas) {
 }
 const PROVENTO = /dividendo|juros sobre capital|rendimento|reembolso|leilao de fracao|amortizacao|restituicao|premio|pagamento de juros/;
 const LANC_MOV = [ // movimentação da B3 → lançamento do Milhão
-  [/liquidacao|^compra$|^venda$/, (cred) => (cred ? "C" : "V"), null],
+  [/liquidacao|^compra$|^venda$|^compra ?\/ ?venda$/, (cred) => (cred ? "C" : "V"), null],
   [/desdobr/, (cred) => (cred ? "B" : null), "Desdobramento"],
   [/bonificacao/, (cred) => (cred ? "B" : null), "Bonificação"],
   [/grupamento/, (cred) => (cred ? "B" : "G"), "Grupamento"],
   [/fracao em ativos/, (cred) => (cred ? null : "G"), "Fração vendida em leilão"],
+  // a empresa deixou de existir com esse código (incorporada, cindida, fundo resgatado): as ações saem da carteira
+  [/incorporacao|cisao|resgate|cancelamento|vencimento/, (cred) => (cred ? null : "G"), "Saída por evento da empresa"],
 ];
 /* lê uma aba e devolve o que dá para aproveitar dela */
 function interpretarAba(linhas, nomeAba) {
@@ -2505,7 +2507,12 @@ function interpretarAba(linhas, nomeAba) {
       if (/^atualizacao/.test(mov)) {
         // "Atualização" é quando ativos entram na conta por um evento (a subscrição que vira cota, a troca de código).
         // A entrada vira compra; o preço vem da planilha ou você confirma na prévia
-        if (!cred) { outro("Atualização de saída (ativo que trocou de código)"); continue; }
+        if (!cred) {   // o código antigo sai da carteira (o novo entra na linha de crédito)
+          const q = Math.round(Math.abs(numeroBR(l[cQtd])) * 1e6) / 1e6, data = dataImport(l[cData]);
+          if (data && q > 0) r.lancs.push({ id: novoId(), ticker: t, tipo: "G", data, qtd: q, preco: 0, origem: "b3-movimentacao", evento: "Troca de código na B3" });
+          else outro("Linha sem data ou quantidade");
+          continue;
+        }
         const preco = numeroBR(l[cPreco]), q = Math.round(Math.abs(numeroBR(l[cQtd]))), data = dataImport(l[cData]);
         if (data && q > 0) r.lancs.push({ id: novoId(), ticker: t, tipo: "C", data, qtd: q, preco: preco > 0 ? preco : null,
           origem: "b3-movimentacao", evento: "Atualização na B3", semPreco: !(preco > 0) });
@@ -2587,6 +2594,17 @@ async function lerArquivosImportacao(arquivos) {
   }));
   return tudo;
 }
+/* lançamento que iguala a quantidade à posição da B3.
+   Falta ação: entra sem custo (desdobramento ou bonificação que a planilha não trouxe).
+   Sobra ação: se a conta fecha como grupamento (2 para 1, 10 para 1…), sai sem mudar o valor investido;
+   senão é uma venda que ficou fora da planilha e sai pelo preço médio, sem inventar lucro nem prejuízo */
+function lancAjuste(ticker, de, para, pm, data) {
+  const qtd = Math.round(Math.abs(para - de) * 1e6) / 1e6, base = { id: "aj", ticker, data, qtd, origem: "b3-posicao", evento: "Ajuste pela posição da B3" };
+  if (para > de) return { ...base, tipo: "B", preco: 0 };
+  const k = para > 0 ? de / para : 0;
+  if (k >= 2 && Math.abs(k - Math.round(k)) < 1e-6) return { ...base, tipo: "G", preco: 0 };
+  return { ...base, tipo: "V", preco: +pm.toFixed(6) };
+}
 const chaveLanc = (l) => [l.data, l.ticker, l.tipo, l.qtd, l.evento === "Atualização na B3" ? "atualizacao" : (+l.preco || 0).toFixed(2)].join("|");
 const plural = (n, um, varios) => `${F.n0.format(n)} ${n === 1 ? um : varios}`;
 
@@ -2639,6 +2657,16 @@ function previaImportacao(tudo) {
     if (falta > 0) { entra.push(l); tem.set(k, (tem.get(k) || 0) + 1); }
   }
   novos = entra.map(({ arq, ...l }) => l);
+  // troca de código (VIIA3 → BHIA3): o que você pagou no código antigo passa para o novo
+  const porDia = (ev) => novos.filter((l) => l.evento === ev).reduce((m, l) => m.set(l.data, [...(m.get(l.data) || []), l]), new Map());
+  const saidas = porDia("Troca de código na B3"), entradas = porDia("Atualização na B3");
+  for (const [dia, ss] of saidas) {
+    const es = entradas.get(dia) || [];
+    if (ss.length !== 1 || es.length !== 1) continue;   // sem par claro, você confirma o preço na prévia
+    const antes = [...c.lancamentos, ...novos].filter((l) => l.data < dia || (l.data === dia && l !== ss[0] && l !== es[0]));
+    const velho = posicoes({ lancamentos: antes }).find((p) => p.ticker === ss[0].ticker);
+    if (velho?.custo > 0 && es[0].qtd > 0) { es[0].preco = +(velho.custo / es[0].qtd).toFixed(6); delete es[0].semPreco; }
+  }
   const repetidos = tudo.lancs.length - pulados - novos.length;
   const semPreco = novos.filter((l) => l.semPreco);
 
@@ -2666,7 +2694,7 @@ function previaImportacao(tudo) {
     const ajustes = [...tickers].filter((t) => !fora.has(t)).map((t) => ({ ticker: t, de: sim[t]?.qtd || 0, para: naB3[t]?.qtd || 0 }))
       .filter((a) => Math.abs(a.para - a.de) > 1e-6).sort((a, b) => a.ticker.localeCompare(b.ticker));
     if (!ajustar) return { lanc: base, ajustes };
-    return { ajustes, lanc: [...base, ...ajustes.map((a) => ({ id: "aj", ticker: a.ticker, tipo: a.para > a.de ? "B" : "G", data: hoje, qtd: Math.abs(a.para - a.de), preco: 0 }))] };
+    return { ajustes, lanc: [...base, ...ajustes.map((a) => lancAjuste(a.ticker, a.de, a.para, sim[a.ticker]?.pm || 0, hoje))] };
   };
   const ajustes0 = montar(new Set(), true, true).ajustes;
   const listaTexto = (xs) => xs.length > 1 ? xs.slice(0, -1).join(", ") + " e " + xs.at(-1) : xs[0] || "";
@@ -2724,7 +2752,7 @@ function previaImportacao(tudo) {
       <span>Trocar as ${plural(movTrocavel.length, "compra ou venda", "compras e vendas")} que vieram da Movimentação pelas da Negociação, que têm a data do pregão. Assim nada fica em dobro.</span></label>` : ""}
     ${ajustes0.length ? `<label class="imp-check"><input type="checkbox" id="imp-ajustar" checked><span>Igualar as quantidades às da B3. A diferença quase sempre é desdobramento, bonificação ou grupamento: o que falta entra sem custo e o que sobra sai sem mudar o valor investido.</span></label>
       <p class="fraco" style="margin:-8px 0 0 25px">Se a diferença for uma compra ou venda de antes do período baixado, desmarque e importe a Movimentação desse período.</p>` : ""}
-    ${!temPosicao && novos.some((l) => l.tipo === "C" || l.tipo === "V") ? `<p class="fraco" style="margin:0">Dica: mande junto a planilha de <b>Posição</b> de hoje. Assim o Milhão confere se as quantidades ficaram iguais às da B3.</p>` : ""}
+    ${!temPosicao ? `<p class="imp-nota">Mande junto a planilha de <b>Posição</b> de hoje. Sem ela, uma venda ou evento fora do período baixado deixa a quantidade antiga na carteira. Com ela, o Milhão confere cada ativo e iguala as quantidades às da B3.</p>` : ""}
     ${fora.length ? `<details class="imp-fora"><summary>Fica de fora: ${plural(fora.reduce((s, [, v]) => s + v, 0), "linha", "linhas")}</summary>
       <ul class="imp-resumo">${fora.map(([k, v]) => `<li class="fora"><span>${esc(k)}</span><span>${F.n0.format(v)}</span></li>`).join("")}</ul></details>` : ""}
     ${semCot.length ? `<p class="fraco" style="margin:0">Sem cotação na base do Milhão: ${esc(semCot.slice(0, 8).join(", "))}${semCot.length > 8 ? "…" : ""}. Eles entram na carteira, mas sem valor atual.</p>` : ""}`;
@@ -2785,10 +2813,9 @@ function previaImportacao(tudo) {
     if (ajustes.length) {
       const agora = Object.fromEntries(posicoes(c).map((p) => [p.ticker, p]));
       for (const a of ajustes) {
-        const d = Math.round((a.para - (agora[a.ticker]?.qtd || 0)) * 1e6) / 1e6;
+        const de = agora[a.ticker]?.qtd || 0, d = Math.round((a.para - de) * 1e6) / 1e6;
         if (!d) continue;
-        c.lancamentos.push({ id: novoId(), ticker: a.ticker, tipo: d > 0 ? "B" : "G", data: hoje, qtd: Math.abs(d), preco: 0,
-          origem: "b3-posicao", evento: "Ajuste pela posição da B3" });
+        c.lancamentos.push({ ...lancAjuste(a.ticker, de, a.para, agora[a.ticker]?.pm || 0, hoje), id: novoId() });
         nAj++;
       }
     }
@@ -5194,7 +5221,8 @@ function rentabilidade(ev, c, provs) {
     if ((l.tipo !== "C" && l.tipo !== "V") || !ok.has(l.ticker)) continue;
     // compra antes do primeiro preço conhecido conta no dia em que o ativo passa a ter preço
     const dia = ev.inicio?.[l.ticker] > l.data ? ev.inicio[l.ticker] : l.data;
-    fluxo[naData(dia)] += (l.tipo === "C" ? 1 : -1) * l.qtd * (l.preco || 0);
+    const preco = l.evento === "Ajuste pela posição da B3" && l.tipo === "V" ? (precoAtual(l.ticker) ?? l.preco) : l.preco;
+    fluxo[naData(dia)] += (l.tipo === "C" ? 1 : -1) * l.qtd * (preco || 0);
   }
   for (const p of provs) if (p.recebido && ok.has(p.ticker)) prov[naData(p.pagamento)] += p.total;
   let cota = 1, antes = 0;
