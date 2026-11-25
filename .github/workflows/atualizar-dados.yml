@@ -52,7 +52,7 @@ jobs:
         run: python etl/conferencia.py --dados site/data --anterior https://milhao.pages.dev/data
 
       - name: Montar o site
-        run: cp index.html site/ && python etl/icones.py --saida site && touch site/.nojekyll
+        run: cp index.html _headers site/ && python etl/icones.py --saida site && touch site/.nojekyll
 
       # o mesmo site também vai para milhao.pages.dev (Cloudflare Pages, plano gratuito)
       - uses: actions/setup-node@v4
