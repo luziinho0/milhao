@@ -180,6 +180,20 @@ nav.menu a[href="#consolidador"]:hover svg,.servicos a[href="#consolidador"]:hov
 .sugestoes button:hover,.sugestoes button.sel{background:var(--papel)}
 .sugestoes b{width:64px;flex:none}
 .topo .usuario{margin-left:auto;font-size:13px;color:var(--tinta-2)}
+/* pesquisa grande da tela inicial, embaixo das carteiras */
+.coluna-carteiras{display:flex;flex-direction:column;gap:20px;min-width:0}
+.pesquisa-inicio{padding:24px 26px}
+.pesquisa-inicio h2{margin:0 0 4px;font-size:20px}
+.pesquisa-inicio>p{margin:0 0 16px}
+.busca.busca-grande{max-width:none}
+.busca-grande input{height:54px;font-size:17px;padding-left:48px;border-radius:14px;border:1.5px solid var(--linha-2);transition:border-color .15s,box-shadow .15s}
+.busca-grande input:focus{outline:none;border-color:var(--verde);box-shadow:0 0 0 4px rgba(15,138,98,.14)}
+.busca-grande svg{left:16px;width:20px;height:20px}
+.busca-grande .sugestoes button{padding:11px 14px}
+.atalhos-busca{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:14px;font-size:13.5px}
+.atalhos-busca a{display:inline-flex;gap:6px;align-items:baseline;padding:6px 12px;border:1px solid var(--linha);border-radius:999px;background:var(--branco);color:var(--tinta);text-decoration:none;font-weight:650}
+.atalhos-busca a em{font-style:normal;font-weight:500;font-size:12.5px}
+.atalhos-busca a:hover{border-color:var(--verde);background:var(--verde-claro)}
 /* barra de serviços da tela inicial */
 .barra-topo{position:sticky;top:0;z-index:6;background:var(--branco);border-bottom:1px solid var(--linha)}
 .barra-dentro{max-width:1280px;margin:0 auto;padding:10px 36px;display:flex;flex-wrap:wrap;align-items:center;gap:20px;row-gap:6px}
@@ -2137,6 +2151,7 @@ function telaCarteiras() {
     <main class="conteudo" style="margin:0 auto;padding-top:34px">
     <div class="cabeca"><div><h1>Olá, ${esc(S.estado.perfil.nome.split(" ")[0])}. Qual carteira vamos abrir?</h1></div></div>
     <div class="topo-carteiras">
+    <div class="coluna-carteiras">
     <div class="lista-carteiras">
       ${cs.map((c) => { const r = resumoCarteira(c);
         return `<div class="cartao-carteira"><button data-id="${c.id}"><strong>${esc(c.nome)}</strong>
@@ -2149,6 +2164,8 @@ function telaCarteiras() {
           <button class="renomear-carteira" data-renomear="${c.id}" aria-label="Renomear a carteira ${esc(c.nome)}" title="Renomear carteira">${ICO.lapis}</button>
           <button class="excluir-carteira" data-excluir="${c.id}" aria-label="Excluir a carteira ${esc(c.nome)}" title="Excluir carteira">${ICO.lixo}</button></div>`; }).join("")}
       <button class="nova" id="nova-carteira">Criar carteira</button>
+    </div>
+    ${S.ativos.length ? blocoPesquisa() : ""}
     </div>
     ${blocoAlocacao()}
     </div>
@@ -2187,6 +2204,10 @@ function telaCarteiras() {
     else ir("#" + r);
   });
   ligarBusca(); ligarBotaoTema();
+  if ($("#busca-inicio")) {
+    if (innerWidth < 600) $("#busca-inicio").placeholder = "Código ou nome da empresa";
+    ligarBusca($("#busca-inicio"), $("#sugestoes-inicio"));
+  }
   pintarAlocacao();
   $$("[data-aloc]").forEach((b) => b.onclick = () => { alocModo = b.dataset.aloc; $$("[data-aloc]").forEach((x) => x.setAttribute("aria-pressed", x === b)); pintarAlocacao(); });
   $("#sair").onclick = async () => {
@@ -2247,8 +2268,20 @@ function moldura(rota) {
   }
 }
 
-function ligarBusca() {
-  const inp = $("#busca"), box = $("#sugestoes");
+function blocoPesquisa() {
+  const negociadas = [...S.ativos].sort((a, b) => (b.liq || 0) - (a.liq || 0)).slice(0, 6);
+  return `<section class="painel pesquisa-inicio" aria-labelledby="pesquisa-inicio-t">
+      <h2 id="pesquisa-inicio-t">Pesquisar um ativo</h2>
+      <p class="sutil">Ações, FIIs, ETFs e BDRs da B3. Abra a página com cotação, dividendos, preço justo e gráfico.</p>
+      <div class="busca busca-grande">${ICO.busca}
+        <input type="search" id="busca-inicio" placeholder="Digite o código ou o nome: PETR4, Itaú, MXRF11" aria-label="Pesquisar ação, FII, ETF ou BDR" autocomplete="off">
+        <div class="sugestoes oculto" id="sugestoes-inicio" role="listbox"></div>
+      </div>
+      ${negociadas.length ? `<div class="atalhos-busca"><span class="fraco">Mais negociadas hoje:</span>${negociadas.map((a) => `<a href="#ativo-${esc(a.t)}" title="${esc(a.n)}">${esc(a.t)}${a.var_dia != null ? `<em class="${cls(a.var_dia)}">${pct(a.var_dia, 1, true)}</em>` : ""}</a>`).join("")}</div>` : ""}
+    </section>`;
+}
+function ligarBusca(inp = $("#busca"), box = $("#sugestoes")) {
+  if (!inp || !box) return;
   let sel = 0, res = [];
   const mostrar = () => {
     const q = inp.value.trim().toUpperCase();
