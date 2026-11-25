@@ -137,6 +137,9 @@ label.campo{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(
 .entrada-form .nota{font-size:13px;color:var(--tinta-3);margin:0}
 .entrada-form .esqueci{font-size:14px;color:var(--verde);font-weight:600;margin-top:-6px;align-self:flex-end}
 .entrada-form .sutil a{color:var(--verde);font-weight:600}
+.entrada-form .aceite-cadastro{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.45;color:var(--tinta-2);cursor:pointer}
+.entrada-form .aceite-cadastro input{width:18px;height:18px;margin:1px 0 0;flex:none;accent-color:var(--verde)}
+.entrada-form .aceite-cadastro a{color:var(--verde);font-weight:600}
 .entrada-rodape{width:100%;max-width:400px;display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center}
 .entrada-rodape .nota{font-size:13px;color:var(--tinta-3);margin:0}
 .entrada-rodape .links-legais{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
@@ -1060,7 +1063,8 @@ body.com-filtrao .filtrao{display:block}
 <input type="file" id="arquivo-importar" accept=".xlsx,.csv,.txt" multiple class="oculto">
 <input type="file" id="arquivo-backup" accept=".json" class="oculto">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- versão fixa + conferência do arquivo (SRI): se o CDN for adulterado, o navegador não roda o script -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.2/dist/umd/supabase.min.js" integrity="sha384-7i/4BYWz4Mn+lJfg2HWfEPfZQ7tmFKF3CTSKlXBpxWjNlLjcg+T6smpHG4gLmU1u" crossorigin="anonymous"></script>
 <script>
 "use strict";
 /* =====================================================================
@@ -1939,10 +1943,10 @@ function telaLogin(curva, modo = "entrar") {
         ${modo !== "esqueci" ? `<label class="campo">${modo === "nova" ? "Nova senha" : "Senha"}<span class="senha-caixa"><input type="password" name="senha" required minlength="6"
             autocomplete="${modo === "entrar" ? "current-password" : "new-password"}"><button type="button" class="ver-senha" aria-label="Mostrar senha">Mostrar</button></span>${modo !== "entrar" ? `<small class="fraco">No mínimo 6 caracteres</small>` : ""}</label>` : ""}
         ${modo === "entrar" ? `<a href="#" data-modo="esqueci" class="esqueci">Esqueci minha senha</a>` : ""}
+        ${modo === "criar" ? `<label class="aceite-cadastro"><input type="checkbox" name="aceite" required><span>Tenho 18 anos ou mais e li os <a href="#termos" target="_blank">Termos de uso</a> e a <a href="#privacidade" target="_blank">Política de privacidade</a>.</span></label>` : ""}
         <p class="erro-login oculto" id="erro-login" role="alert"></p>
         <button class="btn primario" type="submit">${textos.botao}</button>
         ${modo === "esqueci" || modo === "nova" ? (textos.troca ? `<p class="sutil" style="margin:0;text-align:center">${textos.troca}</p>` : "") : ""}
-        ${modo === "criar" ? `<p class="nota">Ao criar a conta, você concorda com os <a href="#termos">Termos de uso</a> e a <a href="#privacidade">Política de privacidade</a>.</p>` : ""}
       </form>
       <div class="entrada-rodape">
         <p class="nota">Suas carteiras ficam salvas na sua conta e abrem em qualquer computador ou celular.</p>
@@ -1964,6 +1968,7 @@ function telaLogin(curva, modo = "entrar") {
     e.preventDefault(); erro("");
     const f = new FormData(form), email = String(f.get("email") || "").trim(), senha = String(f.get("senha") || "");
     if (modo === "criar" && !String(f.get("nome") || "").trim()) return erro("Conte como você quer ser chamado.");
+    if (modo === "criar" && !f.get("aceite")) return erro("Para criar a conta, confirme que tem 18 anos ou mais e que leu os Termos e a Política.");
     if (modo !== "nova" && !/^\S+@\S+\.\S+$/.test(email)) return erro("Confira o e-mail: falta alguma coisa nele.");
     if (modo !== "esqueci" && senha.length < 6) return erro("A senha precisa ter pelo menos 6 caracteres.");
     botao.disabled = true; const rotulo = botao.textContent; botao.textContent = "Aguarde…";
@@ -5745,27 +5750,31 @@ const rodapeSite = () => `<footer class="rodape-site">
 function telaDocumento(qual) {
   const quem = vendasAbertas() ? `${esc(VENDEDOR.nome)}, ${esc(VENDEDOR.documento)}, contato: <a href="mailto:${esc(VENDEDOR.email)}">${esc(VENDEDOR.email)}</a>` : "";
   const contato = VENDEDOR.email ? `pelo e-mail <a href="mailto:${esc(VENDEDOR.email)}">${esc(VENDEDOR.email)}</a>` : "pelo e-mail de contato informado nesta página";
-  const termos = `<h1>Termos de uso e assinatura</h1><p class="fraco">Última atualização: 23/11/2026</p>
+  const termos = `<h1>Termos de uso e assinatura</h1><p class="fraco">Última atualização: 25/11/2026</p>
     ${quem ? `<p><b>Quem oferece o Milhão:</b> ${quem}.</p>` : ""}
     <h2>1. O que é o Milhão</h2><p>O Milhão é uma ferramenta para organizar carteiras de ações e FIIs da B3, ver cotações, proventos, números das empresas e gráficos. Os dados vêm de fontes públicas da B3 e da CVM, com cotações de fechamento, e podem ter atrasos ou erros. O site foi desenvolvido pela ${DESENVOLVEDORA}, empresa de propriedade de ${esc(VENDEDOR.nome || "Luiz Henrique Santos Barboza")}.</p>
     <h2>2. Não é recomendação de investimento</h2><p>Nada no Milhão é recomendação de compra ou venda nem consultoria. Preço justo, preço teto e indicadores são cálculos automáticos feitos com dados públicos e premissas que você pode mudar. As respostas do Filtrão são geradas por inteligência artificial e podem conter erros. As decisões de investimento são suas.</p>
-    <h2>3. Sua conta</h2><p>Você é responsável pelo seu e-mail e pela sua senha. Você pode excluir a conta a qualquer momento no Perfil.</p>
+    <h2>3. Sua conta</h2><p>O Milhão é para <b>maiores de 18 anos</b>. Ao criar a conta, você confirma que tem 18 anos ou mais. Você é responsável pelo seu e-mail e pela sua senha. Você pode excluir a conta a qualquer momento no Perfil.</p>
     <h2>4. Planos</h2><p>O plano <b>Grátis</b> não tem custo. O <b>Milhão Ouro</b> custa ${brl(PLANO_OURO.preco)} por mês e libera: carteiras sem limite, o Consolidador de carteira (renda fixa, Tesouro Direto, fundos, criptomoedas e outros bens), o cálculo do Imposto de Renda, Análise avançada (médias móveis, Bollinger, IFR, Medir e Marcar preço), perguntas sem limite ao Filtrão, a Comunidade e a logo dourada.</p>
     <h2>5. Teste grátis</h2><p>Toda conta ganha <b>7 dias de Milhão Ouro de graça</b>, sem cartão. Quando o teste acaba, a conta volta sozinha para o plano Grátis, sem nenhuma cobrança. Só é cobrado quem assinar.</p>
     <h2>6. Formas de pagamento e renovação</h2><p>Os pagamentos são feitos pelo Mercado Pago, de duas formas:</p><ul><li><b>Cartão:</b> a assinatura <b>renova automaticamente todo mês</b> até você cancelar.</li><li><b>Pix:</b> cada pagamento libera <b>30 dias</b> de Milhão Ouro, sem renovação automática. Se pagar de novo antes de acabar, os dias se somam. Quando os dias acabam, a conta volta sozinha para o plano Grátis.</li></ul><p>O Milhão não recebe nem guarda os dados do seu cartão ou da sua conta bancária. Se o preço mudar, você é avisado com pelo menos 30 dias de antecedência.</p>
     <h2>7. Cancelamento</h2><p>No cartão, você cancela quando quiser no Perfil, em "Cancelar assinatura", ou no app do Mercado Pago. A renovação para na hora e você continua com o Ouro até o fim do período já pago. No Pix não há o que cancelar: basta não pagar de novo. Não há multa.</p>
-    <h2>8. Direito de arrependimento</h2><p>Pelo artigo 49 do Código de Defesa do Consumidor, você pode desistir da assinatura em até 7 dias depois da primeira contratação e receber o valor pago de volta, ${contato}.</p>
+    <h2>8. Direito de arrependimento</h2><p>Pelo artigo 49 do Código de Defesa do Consumidor, você pode desistir da assinatura em até 7 dias depois da primeira contratação e receber o valor pago de volta. Basta pedir ${contato}, com o e-mail da sua conta. Respondemos confirmando o recebimento do pedido e o estorno é feito pelo mesmo meio de pagamento (cartão ou Pix).</p>
     <h2>9. Uso correto</h2><p>Não é permitido tentar burlar os limites do plano, copiar o site ou os dados em massa, ou usar o Filtrão para outros fins. Contas que fizerem isso podem ser suspensas.</p><p><b>Comunidade:</b> cada pessoa responde pelo que publica. O que aparece lá é opinião de usuários, não recomendação de investimento do Milhão. Não é permitido ofender, divulgar golpe, promessa de ganho ou propaganda, nem publicar dados pessoais de ninguém. O Milhão pode remover publicações fora das regras e bloquear quem insistir.</p>
-    <h2>10. Mudanças nestes termos</h2><p>Se estes termos mudarem, a data acima é atualizada e mudanças importantes são avisadas no site.</p>
-    <h2>11. Lei e foro</h2><p>Valem as leis do Brasil. Fica eleito o foro do seu domicílio, como prevê o Código de Defesa do Consumidor.</p>`;
-  const privacidade = `<h1>Política de privacidade</h1><p class="fraco">Última atualização: 23/11/2026</p>
+    <h2>10. Como funciona a moderação da Comunidade</h2><ul><li><b>Avisar:</b> qualquer pessoa pode denunciar uma publicação no botão "Denunciar" ou ${contato}, dizendo qual é a publicação e o motivo.</li><li><b>Análise:</b> as denúncias são analisadas em até 3 dias úteis. Conteúdo claramente ilegal (golpe, manipulação de mercado, ameaça, discriminação, dados pessoais de terceiros) é retirado assim que identificado.</li><li><b>Revisão:</b> quem teve uma publicação removida ou a conta bloqueada pode pedir revisão ${contato}, e a resposta diz o motivo da decisão.</li><li><b>Transparência:</b> uma vez por ano o Milhão publica quantas denúncias recebeu, quantas publicações removeu e por quais motivos.</li></ul>
+    <h2>11. Mudanças nestes termos</h2><p>Se estes termos mudarem, a data acima é atualizada e mudanças importantes são avisadas no site.</p>
+    <h2>12. Lei e foro</h2><p>Valem as leis do Brasil. Fica eleito o foro do seu domicílio, como prevê o Código de Defesa do Consumidor.</p>`;
+  const privacidade = `<h1>Política de privacidade</h1><p class="fraco">Última atualização: 25/11/2026</p>
     ${quem ? `<p><b>Responsável pelos dados:</b> ${quem}.</p>` : ""}
     <h2>1. O que guardamos</h2><ul><li>Nome, e-mail e foto de perfil (se você colocar).</li><li>Se você entrar na Comunidade: o nome de perfil que escolher e o que publicar lá, que ficam visíveis para os outros membros. Seu nome e e-mail da conta não aparecem.</li><li>Suas carteiras, lançamentos e preferências (como modo escuro e marcas de preço).</li><li>Situação do seu plano (grátis ou Ouro), o registro dos pagamentos (valor, data e número do pagamento no Mercado Pago) e a contagem diária de perguntas ao Filtrão.</li></ul>
-    <h2>2. Para que usamos</h2><p>Só para fazer o Milhão funcionar: entrar na conta, mostrar suas carteiras em qualquer aparelho, liberar os recursos do seu plano e responder suas perguntas. Não vendemos seus dados e não mostramos anúncios.</p>
-    <h2>3. Com quem os dados passam</h2><ul><li><b>Supabase</b>: login e banco de dados onde ficam sua conta e carteiras.</li><li><b>Google (Gemini)</b>: quando você pergunta ao Filtrão, a pergunta e um resumo da carteira e da tela vão para a IA do Google. Na camada gratuita, o Google pode usar esse conteúdo para melhorar os produtos dele. Não envie dados pessoais nas perguntas.</li><li><b>Mercado Pago</b>: processa os pagamentos do Milhão Ouro, no cartão ou no Pix. Os dados do cartão e da sua conta bancária ficam só com ele.</li><li><b>Cloudflare e GitHub</b>: hospedam o site.</li></ul>
+    <h2>2. Para que usamos e com qual base na LGPD</h2><ul><li><b>Prestar o serviço que você contratou</b> (art. 7º, V): entrar na conta, mostrar suas carteiras em qualquer aparelho, liberar os recursos do seu plano, responder suas perguntas e manter a Comunidade.</li><li><b>Cumprir obrigações legais</b> (art. 7º, II): guardar registros de pagamento e de acesso quando a lei pede.</li><li><b>Segurança e prevenção de fraude</b> (art. 7º, IX, legítimo interesse): impedir abuso dos limites do plano, golpes e acessos indevidos.</li></ul><p>Não vendemos seus dados e não mostramos anúncios. O Milhão não usa cookies de rastreamento nem de publicidade: o navegador só guarda o necessário para manter você logado e lembrar preferências, como o modo escuro.</p>
+    <h2>3. Com quem os dados passam</h2><ul><li><b>Supabase</b>: login e banco de dados onde ficam sua conta e carteiras.</li><li><b>Google (Gemini)</b>: quando você pergunta ao Filtrão, a pergunta e um resumo da carteira e da tela vão para a IA do Google. Na camada gratuita, o Google pode usar esse conteúdo para melhorar os produtos dele. Não envie dados pessoais nas perguntas.</li><li><b>Mercado Pago</b>: processa os pagamentos do Milhão Ouro, no cartão ou no Pix. Os dados do cartão e da sua conta bancária ficam só com ele.</li><li><b>Cloudflare e GitHub</b>: hospedam o site.</li></ul><p>Alguns desses serviços guardam dados em servidores fora do Brasil (por exemplo, nos Estados Unidos). Essa transferência é necessária para o Milhão funcionar e segue o artigo 33 da LGPD, com empresas que adotam padrões de proteção compatíveis.</p>
     <h2>4. Seus direitos (LGPD)</h2><p>Você pode ver e corrigir seus dados no Perfil, baixar suas carteiras em "Exportar backup" e excluir tudo em "Excluir minha conta". Para qualquer outro pedido sobre seus dados, fale ${contato}.</p>
     <h2>5. Quanto tempo guardamos</h2><p>Enquanto sua conta existir. Ao excluir a conta, apagamos seus dados, exceto o que a lei mandar guardar (como registros de pagamento).</p>
-    <h2>6. Segurança</h2><p>A conexão é criptografada (HTTPS) e cada pessoa só acessa os próprios dados, por regras no banco de dados. As senhas são guardadas cifradas pelo Supabase, e o Milhão nunca tem acesso a elas.</p>`;
+    <h2>6. Segurança</h2><p>A conexão é criptografada (HTTPS) e cada pessoa só acessa os próprios dados, por regras no banco de dados. As senhas são guardadas cifradas pelo Supabase, e o Milhão nunca tem acesso a elas. Para segurança, o serviço de login registra a data, a hora e o endereço IP dos acessos.</p>
+    <h2>7. Se acontecer um incidente</h2><p>Se houver um incidente de segurança que possa trazer risco ou dano relevante a você, avisamos você e a Autoridade Nacional de Proteção de Dados (ANPD), como manda a LGPD, dizendo o que aconteceu, quais dados foram afetados e o que foi feito.</p>
+    <h2>8. Menores de idade</h2><p>O Milhão não é feito para menores de 18 anos e não permite que eles criem conta. Se soubermos que uma conta é de um menor, ela é excluída.</p>
+    <h2>9. Contato sobre seus dados</h2><p>O canal para qualquer assunto sobre seus dados pessoais, inclusive pedidos da ANPD, é ${contato}. Respondemos em até 15 dias.</p>`;
   $("#raiz").innerHTML = `<main class="conteudo documento">
       <p><a href="#" id="doc-voltar" class="link-voltar">← Voltar</a></p>
       <article class="painel doc-texto">${qual === "termos" ? termos : privacidade}
