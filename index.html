@@ -94,12 +94,12 @@ label.campo{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(
 .marca-anima .logo-nome{display:inline-flex;align-items:baseline}
 .marca-anima .l{display:inline-block;clip-path:inset(-60% -12% 0 -12%)}
 .marca-anima .l b{display:inline-block;font-weight:inherit;animation:letra-sobe .75s cubic-bezier(.2,.9,.25,1) calc(.15s + var(--i) * 75ms) both}
-.marca-anima i{display:inline-block;transform-origin:50% 100%;
-  animation:ponto-cai .8s cubic-bezier(.3,1.4,.5,1) .78s both,ponto-pulsa 4.5s ease-in-out 2.4s infinite}
+.marca-anima i{display:inline-block;transform-origin:50% 100%;will-change:transform;
+  animation:ponto-cai .8s cubic-bezier(.3,1.4,.5,1) .78s both,ponto-pulsa 4.5s ease-in-out 2.4s 3}  /* pulsa 3 vezes e para: sem gasto contínuo */
 .marca-anima:hover .l{animation:letra-pula .5s cubic-bezier(.3,1.6,.5,1) calc(var(--i) * 45ms)}
 @keyframes letra-sobe{from{transform:translateY(105%)}to{transform:none}}
 @keyframes ponto-cai{0%{transform:translateY(-1.1em) scale(.6);opacity:0}45%{opacity:1}100%{transform:none;opacity:1}}
-@keyframes ponto-pulsa{0%,82%,100%{transform:none;text-shadow:none}88%{transform:scale(1.22);text-shadow:0 0 .35em rgba(47,203,143,.75)}}
+@keyframes ponto-pulsa{0%,82%,100%{transform:none}88%{transform:scale(1.25)}}  /* só transform: roda na placa de vídeo, sem pesar */
 @keyframes letra-pula{40%{transform:translateY(-.12em)}}
 /* velas */
 .velas{position:absolute;left:0;right:0;bottom:118px;width:100%;height:170px;z-index:1;opacity:.5;-webkit-mask-image:linear-gradient(90deg,transparent,#000 35%);mask-image:linear-gradient(90deg,transparent,#000 35%)}
@@ -108,7 +108,7 @@ label.campo{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(
 /* telão de cotações ao fundo */
 .telao{position:absolute;inset:-25% -20%;z-index:0;opacity:.07;transform:perspective(1100px) rotateX(24deg) rotateZ(-9deg);
   -webkit-mask-image:radial-gradient(ellipse at 50% 45%,#000 30%,transparent 72%);mask-image:radial-gradient(ellipse at 50% 45%,#000 30%,transparent 72%);pointer-events:none}
-.telao-rolo{animation:telao-rola 90s linear infinite}
+.telao-rolo{animation:telao-rola 90s linear infinite;will-change:transform}
 .telao-grade{display:grid;grid-template-columns:repeat(8,1fr);gap:2px;padding-bottom:2px}
 .telao-grade div{background:rgba(47,203,143,.07);border:1px solid rgba(47,203,143,.18);padding:10px 12px;display:flex;flex-direction:column;gap:2px;font-variant-numeric:tabular-nums}
 .telao-grade b{font-size:15px;letter-spacing:.02em;color:#E9F7F0}
@@ -137,6 +137,8 @@ label.campo{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(
 .entrada-form .nota{font-size:13px;color:var(--tinta-3);margin:0}
 .entrada-form .esqueci{font-size:14px;color:var(--verde);font-weight:600;margin-top:-6px;align-self:flex-end}
 .entrada-form .sutil a{color:var(--verde);font-weight:600}
+.entrada-form .robo:empty{display:none}
+.entrada-form .robo{display:flex;justify-content:center}
 .entrada-form .aceite-cadastro{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.45;color:var(--tinta-2);cursor:pointer}
 .entrada-form .aceite-cadastro input{width:18px;height:18px;margin:1px 0 0;flex:none;accent-color:var(--verde)}
 .entrada-form .aceite-cadastro a{color:var(--verde);font-weight:600}
@@ -193,6 +195,7 @@ nav.menu a[href="#consolidador"]:hover svg,.servicos a[href="#consolidador"]:hov
 .busca-grande input:focus{outline:none;border-color:var(--verde);box-shadow:0 0 0 4px rgba(15,138,98,.14)}
 .busca-grande svg{left:16px;width:20px;height:20px}
 .busca-grande .sugestoes button{padding:11px 14px}
+.mais-linhas{display:flex;justify-content:center;padding:16px 0 4px}
 .atalhos-busca{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:14px;font-size:13.5px}
 .atalhos-busca a{display:inline-flex;gap:6px;align-items:baseline;padding:6px 12px;border:1px solid var(--linha);border-radius:999px;background:var(--branco);color:var(--tinta);text-decoration:none;font-weight:650}
 .atalhos-busca a em{font-style:normal;font-weight:500;font-size:12.5px}
@@ -876,7 +879,9 @@ body.com-filtrao .filtrao{display:block}
 .filtrao-botao{position:fixed;right:18px;bottom:16px;z-index:40;width:64px;height:64px;padding:0;border:none;background:none;cursor:pointer;border-radius:50%}
 .filtrao-cena{position:relative;display:block;width:100%;height:100%;transform-style:preserve-3d;transition:transform .2s ease}
 .filtrao-botao:hover .filtrao-cena{transform:translateY(-3px) rotate(-4deg)}
-.filtrao-botao .filtrao-boneco{animation:respirar 4.5s ease-in-out infinite;transform:translateZ(0);filter:drop-shadow(0 4px 8px rgba(19,36,28,.22))}
+/* "respirar" só com o mouse em cima: parado, o boneco não gasta processamento (no celular fazia diferença) */
+.filtrao-botao .filtrao-boneco{filter:drop-shadow(0 4px 8px rgba(19,36,28,.22))}
+.filtrao-botao:hover .filtrao-boneco{animation:respirar 4.5s ease-in-out infinite}
 @keyframes respirar{0%,100%{translate:0 0}50%{translate:0 -1.5px}}
 /* gráficos girando em volta da cabeça, passando por trás dela */
 .filtrao-orbita{position:absolute;left:50%;top:9%;width:0;height:0;transform-style:preserve-3d;transform:rotateX(72deg);--r:31px;pointer-events:none}
@@ -887,6 +892,8 @@ body.com-filtrao .filtrao{display:block}
   from{transform:rotateZ(var(--a)) translateX(var(--r)) rotateZ(calc(-1 * var(--a))) rotateX(-72deg)}
   to{transform:rotateZ(calc(var(--a) + 360deg)) translateX(var(--r)) rotateZ(calc(-1 * var(--a) - 360deg)) rotateX(-72deg)}}
 .filtrao.pensando .filtrao-orbita i{animation-duration:2.2s}
+.filtrao-orbita i{animation-play-state:paused}
+.filtrao-botao:hover .filtrao-orbita i,.filtrao.aberto .filtrao-orbita i,.filtrao.pensando .filtrao-orbita i{animation-play-state:running}
 .filtrao-pupilas{transform:translate(var(--ox,0px),var(--oy,0px));transition:transform .18s ease-out}
 .filtrao-botao.ocioso .filtrao-pupilas{animation:olhar 7s ease-in-out infinite}
 @keyframes olhar{0%,18%{transform:translate(0,0)}24%,40%{transform:translate(-2.1px,.4px)}46%,60%{transform:translate(2.1px,-.6px)}66%,80%{transform:translate(.6px,1.4px)}86%,100%{transform:translate(0,0)}}
@@ -1077,7 +1084,8 @@ const CHAVE = "milhao:v1";
 const S = { ativos: [], porTicker: {}, meta: null, det: {}, estado: null, memoria: null };
 
 /* ---------- formatação ---------- */
-const nf = (c) => new Intl.NumberFormat("pt-BR", { minimumFractionDigits: c, maximumFractionDigits: c });
+const _nf = {};
+const nf = (c) => _nf[c] ||= new Intl.NumberFormat("pt-BR", { minimumFractionDigits: c, maximumFractionDigits: c });
 const F = { n0: nf(0), n1: nf(1), n2: nf(2) };
 const vazio = (v) => v === null || v === undefined || Number.isNaN(v);
 const brl = (v, c = 2) => vazio(v) ? "–" : (v < 0 ? "-R$ " : "R$ ") + nf(c).format(Math.abs(v));
@@ -1127,6 +1135,33 @@ function perguntar({ titulo, texto = "", rotulo = "", valor = null, botao = "Con
    A chave abaixo é a chave pública do projeto: ela só abre o que as regras do banco permitem
    (cada pessoa lê e grava apenas a própria linha). Sem ela preenchida, o Milhão funciona só no navegador. */
 const NUVEM = { url: "https://gyxftcpycrnjryfwpslt.supabase.co", chave: "sb_publishable_TgiTzZYWxVaPZ0H6S17d1g_4-rAnuWG" };
+// "não sou robô" da Cloudflare (Turnstile) no login, no cadastro e no "esqueci minha senha". Chave pública: pode ficar no código.
+const TURNSTILE_SITE = "__TURNSTILE_SITE__";
+let turnstileCarregando = null;
+function carregarTurnstile() {
+  if (!TURNSTILE_SITE || TURNSTILE_SITE.startsWith("__")) return Promise.resolve(null);
+  if (window.turnstile) return Promise.resolve(window.turnstile);
+  return turnstileCarregando ||= new Promise((ok) => {
+    const sc = document.createElement("script");
+    sc.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"; sc.async = true;
+    sc.onload = () => ok(window.turnstile || null); sc.onerror = () => { turnstileCarregando = null; ok(null); };
+    document.head.append(sc);
+  });
+}
+// liga o widget dentro do formulário e devolve uma função que espera o código (cada código vale para uma tentativa)
+function ligarRobo(caixa) {
+  let token = "", espera = [], id = null, semRobo = false;
+  const pronto = (t) => { token = t; espera.splice(0).forEach((f) => f(t)); };
+  carregarTurnstile().then((ts) => {
+    if (!ts || !caixa.isConnected) { semRobo = true; return pronto(""); }
+    id = ts.render(caixa, { sitekey: TURNSTILE_SITE, appearance: "interaction-only", language: "pt-br", theme: temaEscuro() ? "dark" : "light",
+      callback: pronto, "expired-callback": () => { token = ""; }, "error-callback": () => { token = ""; } });
+  });
+  return {
+    codigo: () => token || semRobo ? Promise.resolve(token) : new Promise((f) => { espera.push(f); setTimeout(() => f(token), 12000); }),
+    renovar: () => { token = ""; try { if (id !== null && caixa.isConnected && window.turnstile) window.turnstile.reset(id); } catch (_) { /* widget já saiu da tela */ } },
+  };
+}
 const SITE = location.origin + location.pathname;
 S.nuvem = null; S.usuario = null;
 function iniciarNuvem() {
@@ -1153,6 +1188,7 @@ async function enviarNuvem() {
 /* depois de entrar: a carteira da nuvem vale; se a nuvem estiver vazia, sobe o que já existia neste navegador */
 async function abrirConta(usuario) {
   S.usuario = usuario;
+  const plano = carregarPlano(); // o plano vem junto com as carteiras, não depois
   const perfil = { nome: nomeDoUsuario(usuario), email: usuario.email };
   const { data, error } = await S.nuvem.from("perfis").select("estado").eq("id", usuario.id).maybeSingle();
   if (error) { aviso("Não deu para buscar suas carteiras na nuvem agora. Tente recarregar a página."); console.warn(error); }
@@ -1165,7 +1201,7 @@ async function abrirConta(usuario) {
     if (!error) { await enviarNuvem(); if (temLocal) aviso("Trouxemos para a sua conta as carteiras que estavam neste navegador"); }
   }
   try { localStorage.setItem(CHAVE, JSON.stringify(S.estado)); } catch (e) { /* sem storage */ }
-  await carregarPlano();
+  await plano;
 }
 async function sairDaConta() {
   if (S.nuvem) await S.nuvem.auth.signOut();
@@ -1944,6 +1980,7 @@ function telaLogin(curva, modo = "entrar") {
             autocomplete="${modo === "entrar" ? "current-password" : "new-password"}"><button type="button" class="ver-senha" aria-label="Mostrar senha">Mostrar</button></span>${modo !== "entrar" ? `<small class="fraco">No mínimo 6 caracteres</small>` : ""}</label>` : ""}
         ${modo === "entrar" ? `<a href="#" data-modo="esqueci" class="esqueci">Esqueci minha senha</a>` : ""}
         ${modo === "criar" ? `<label class="aceite-cadastro"><input type="checkbox" name="aceite" required><span>Tenho 18 anos ou mais e li os <a href="#termos" target="_blank">Termos de uso</a> e a <a href="#privacidade" target="_blank">Política de privacidade</a>.</span></label>` : ""}
+        <div class="robo" id="robo"></div>
         <p class="erro-login oculto" id="erro-login" role="alert"></p>
         <button class="btn primario" type="submit">${textos.botao}</button>
         ${modo === "esqueci" || modo === "nova" ? (textos.troca ? `<p class="sutil" style="margin:0;text-align:center">${textos.troca}</p>` : "") : ""}
@@ -1964,6 +2001,7 @@ function telaLogin(curva, modo = "entrar") {
   };
   const erro = (msg) => { const el = $("#erro-login"); el.textContent = msg; el.classList.toggle("oculto", !msg); };
   form.querySelector("input")?.focus();
+  const robo = modo === "nova" ? null : ligarRobo($("#robo"));
   form.addEventListener("submit", async (e) => {
     e.preventDefault(); erro("");
     const f = new FormData(form), email = String(f.get("email") || "").trim(), senha = String(f.get("senha") || "");
@@ -1974,26 +2012,40 @@ function telaLogin(curva, modo = "entrar") {
     botao.disabled = true; const rotulo = botao.textContent; botao.textContent = "Aguarde…";
     try {
       const a = S.nuvem.auth;
+      const captchaToken = robo ? (await robo.codigo()) || undefined : undefined;
       let r;
-      if (modo === "entrar") r = await a.signInWithPassword({ email, password: senha });
-      if (modo === "criar") r = await a.signUp({ email, password: senha, options: { data: { nome: String(f.get("nome")).trim() }, emailRedirectTo: SITE } });
-      if (modo === "esqueci") r = await a.resetPasswordForEmail(email, { redirectTo: SITE });
+      if (modo === "entrar") r = await a.signInWithPassword({ email, password: senha, options: { captchaToken } });
+      if (modo === "criar") r = await a.signUp({ email, password: senha, options: { data: { nome: String(f.get("nome")).trim() }, emailRedirectTo: SITE, captchaToken } });
+      if (modo === "esqueci") r = await a.resetPasswordForEmail(email, { redirectTo: SITE, captchaToken });
       if (modo === "nova") r = await a.updateUser({ password: senha });
       if (r.error) throw r.error;
       if (modo === "esqueci") { telaLogin(curva, "entrar"); aviso("Se esse e-mail tiver conta, o link já está a caminho. Confira também o spam."); return; }
-      if (modo === "criar" && !r.data.session) { telaLogin(curva, "entrar"); aviso("Conta criada. Confirme pelo link que mandamos no seu e-mail e depois entre."); return; }
+      if (modo === "criar" && !r.data.session) { telaLogin(curva, "entrar"); aviso("Conta criada! Abra o e-mail que mandamos para " + email + " e clique no link para confirmar. Confira também o spam."); return; }
       if (modo === "nova") aviso("Senha nova salva");
       await abrirConta(r.data.user || r.data.session.user);
       ir("#carteiras");
     } catch (err) {
       const m = String(err?.message || err).toLowerCase();
-      erro(m.includes("invalid login") ? "E-mail ou senha não conferem." :
+      if (m.includes("email not confirmed")) {
+        erro("Falta confirmar o seu e-mail. Abra o link que mandamos na hora do cadastro (confira também o spam).");
+        const el = $("#erro-login"), b = document.createElement("button");
+        b.type = "button"; b.className = "btn texto"; b.style.cssText = "padding:4px 0;margin-top:4px"; b.textContent = "Mandar o link de novo";
+        b.onclick = async () => {
+          b.disabled = true; robo?.renovar();
+          const tk = robo ? (await robo.codigo()) || undefined : undefined;
+          const { error } = await S.nuvem.auth.resend({ type: "signup", email, options: { emailRedirectTo: SITE, captchaToken: tk } });
+          b.textContent = error ? "Não deu para mandar agora. Tente em alguns minutos." : "Pronto, mandamos de novo.";
+        };
+        el.append(document.createElement("br"), b); return;
+      }
+      erro(m.includes("captcha") ? "Não conseguimos confirmar que você não é um robô. Espere a verificação terminar e tente de novo." :
+        m.includes("invalid login") ? "E-mail ou senha não conferem." :
         m.includes("already registered") || m.includes("already been registered") ? "Esse e-mail já tem conta. Use Entrar, ou Esqueci minha senha." :
         m.includes("rate limit") || m.includes("security purposes") ? "Muitas tentativas seguidas. Espere um minuto e tente de novo." :
         m.includes("password") ? "Essa senha não foi aceita. Use pelo menos 6 caracteres, misturando letras e números." :
         m.includes("fetch") || m.includes("network") ? "Sem conexão com o servidor. Confira sua internet." :
         "Não deu certo: " + (err?.message || err));
-    } finally { botao.disabled = false; botao.textContent = rotulo; }
+    } finally { botao.disabled = false; botao.textContent = rotulo; robo?.renovar(); }
   });
 }
 
@@ -3059,7 +3111,10 @@ rotas.explorar = (el) => {
       Greenblatt (Fórmula Mágica): soma a posição de cada empresa no EV/EBIT (quanto menor, mais barata) e no ROIC (quanto maior, mais rentável), entre as ${nRanking} ações com lucro operacional e liquidez acima de ${compacto(LIQ_GREENBLATT)} por dia. O terço mais bem colocado é "barata". Não é recomendação de investimento.</p>
     <p class="fraco" id="contagem"></p>
     <div class="rolagem" id="tabela"></div>`;
-  const desenhar = () => {
+  const POR_VEZ = 200;
+  let mostrar = POR_VEZ;
+  const desenhar = (manter = false) => {
+    if (!manter) mostrar = POR_VEZ;
     const [, filtro, chave, dir, modo] = PRESETS[UI.tipo][UI.preset];
     let lista = filtro(dados.filter((a) => a.tipo === UI.tipo));
     if (UI.setor) lista = lista.filter((a) => a.setor === UI.setor);
@@ -3082,24 +3137,28 @@ rotas.explorar = (el) => {
     });
     $("#contagem").textContent = `${lista.length} ${classe(UI.tipo).conta}`;
     $("#tabela").innerHTML = lista.length ? `<table><thead><tr><th>#</th>${cols.map(([k, n]) => `<th class="ordena ${k === "setor" || k === "t" ? "esq" : ""}" data-k="${k}" aria-sort="${ord === k ? (d > 0 ? "ascending" : "descending") : "none"}">${n}</th>`).join("")}</tr></thead>
-      <tbody>${lista.map((a, i) => `<tr><td class="fraco">${i + 1}</td>${cols.map(([k, , f]) => k === "t"
+      <tbody>${lista.slice(0, mostrar).map((a, i) => `<tr><td class="fraco">${i + 1}</td>${cols.map(([k, , f]) => k === "t"
         ? `<td class="esq"><a class="tk" href="#ativo-${a.t}">${a.t}</a><small>${esc(a.n)}</small></td>`
-        : k === "setor" ? `<td class="esq sutil" style="max-width:150px;overflow:hidden;text-overflow:ellipsis" title="${esc(a.setor)}">${esc(a.setor)}</td>` : `<td>${f(a[k])}</td>`).join("")}</tr>`).join("")}</tbody></table>`
+        : k === "setor" ? `<td class="esq sutil" style="max-width:150px;overflow:hidden;text-overflow:ellipsis" title="${esc(a.setor)}">${esc(a.setor)}</td>` : `<td>${f(a[k])}</td>`).join("")}</tr>`).join("")}</tbody></table>
+      ${lista.length > mostrar ? `<div class="mais-linhas"><button class="btn" id="mais-linhas">Mostrar mais ${Math.min(POR_VEZ, lista.length - mostrar)} de ${lista.length - mostrar} restantes</button></div>` : ""}`
       : PRESETS[UI.tipo][UI.preset][0] === "Favoritos" && !favoritos().length
         ? `<div class="vazio"><h3>Você ainda não tem favoritos</h3><p>Na página de um ativo, toque em "Favoritar" para acompanhar por aqui e na agenda de dividendos.</p></div>`
         : `<div class="vazio"><h3>Nenhum ativo passa nesses filtros</h3><p>Afrouxe um dos limites ou escolha outro setor.</p></div>`;
     $$("th.ordena").forEach((th) => th.onclick = () => {
       const k = th.dataset.k; UI.dir = UI.ordem === k ? -UI.dir : (k === "t" || k === "setor" ? 1 : -1); UI.ordem = k; desenhar();
     });
+    if ($("#mais-linhas")) $("#mais-linhas").onclick = () => { mostrar += POR_VEZ; desenhar(true); };
   };
+  let espera;
+  const desenharDepois = () => { clearTimeout(espera); espera = setTimeout(desenhar, 180); };
   $$("[data-tipo]").forEach((b) => b.onclick = () => { UI.tipo = b.dataset.tipo; UI.preset = 0; UI.ordem = null; UI.setor = ""; UI.filtros = {}; UI.graham = ""; UI.green = ""; render(); });
   $$("[data-preset]").forEach((b) => b.onclick = () => { UI.preset = +b.dataset.preset; UI.ordem = null; $$("[data-preset]").forEach((x) => x.setAttribute("aria-pressed", x === b)); desenhar(); });
   $("#f-setor").onchange = (e) => { UI.setor = e.target.value; desenhar(); };
-  $("#f-codigo").oninput = (e) => { UI.codigo = e.target.value.trim().toUpperCase(); desenhar(); };
+  $("#f-codigo").oninput = (e) => { UI.codigo = e.target.value.trim().toUpperCase(); desenharDepois(); };
   if ($("#f-graham")) $("#f-graham").onchange = (e) => { UI.graham = e.target.value; desenhar(); };
   if ($("#f-green")) $("#f-green").onchange = (e) => { UI.green = e.target.value; desenhar(); };
   $("#f-limpar").onclick = () => { UI.filtros = {}; UI.setor = ""; UI.graham = ""; UI.green = ""; UI.codigo = ""; UI.ordem = null; render(); };
-  $$("[data-f]").forEach((i) => i.oninput = () => { UI.filtros[i.dataset.f + i.dataset.lim] = i.value; desenhar(); });
+  $$("[data-f]").forEach((i) => i.oninput = () => { UI.filtros[i.dataset.f + i.dataset.lim] = i.value; desenharDepois(); });
   desenhar();
 };
 
@@ -3806,7 +3865,8 @@ function aporteParaChegar(ini, anual, alvo, n) {
   return i ? (falta * i) / (f - 1) : falta / n;
 }
 const mesDaqui = (m) => { const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() + m); return d; };
-const mesAno = (d) => d.toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
+const _fmtMesAno = new Intl.DateTimeFormat("pt-BR", { month: "long", year: "numeric" });
+const mesAno = (d) => _fmtMesAno.format(d);
 const mesAnoDe = (aaaamm) => mesAno(new Date(aaaamm + "-01T12:00:00"));
 const duracao = (m) => [Math.floor(m / 12) && plural(Math.floor(m / 12), "ano", "anos"), m % 12 && plural(m % 12, "mês", "meses")].filter(Boolean).join(" e ") || "menos de um mês";
 const mesesAtePrazo = (prazo) => { const [a, m] = prazo.split("-").map(Number), h = new Date(); return (a - h.getFullYear()) * 12 + (m - 1 - h.getMonth()); };
@@ -5953,6 +6013,9 @@ async function perguntarFiltrao(texto) {
 
 /* ---------- início ---------- */
 async function iniciar() {
+  // os dados do mercado começam a vir já, junto com o login (antes um esperava o outro)
+  const dadosMercado = Promise.all([j("data/meta.json"), j("data/ativos.json")]);
+  dadosMercado.catch(() => { /* o erro é tratado lá embaixo */ });
   S.estado = carregarEstado();
   S.nuvem = iniciarNuvem();
   if (S.nuvem) {
@@ -5968,13 +6031,15 @@ async function iniciar() {
     if (/[?&]code=/.test(location.search)) history.replaceState(null, "", SITE + location.hash);
   }
   try {
-    [S.meta, S.ativos] = await Promise.all([j("data/meta.json"), j("data/ativos.json")]);
+    [S.meta, S.ativos] = await dadosMercado;
   } catch (e) {
     $("#raiz").innerHTML = `<main class="conteudo"><div class="marca" style="font-size:36px;margin-bottom:24px">Milhão.</div><div class="painel vazio"><h3>Os dados do mercado ainda não foram gerados</h3><p>Rode o robô de dados (etl/milhao_dados.py) ou espere a próxima atualização automática. Detalhe: ${esc(e.message)}</p></div></main>`;
     return;
   }
   S.porTicker = Object.fromEntries(S.ativos.map((a) => [a.t, a]));
-  $("#lista-tickers").innerHTML = S.ativos.map((a) => `<option value="${a.t}">${esc(a.n)}</option>`).join("");
+  // a lista de sugestões dos campos de código não aparece na tela: monta depois, sem segurar a abertura
+  const montarLista = () => { $("#lista-tickers").innerHTML = S.ativos.map((a) => `<option value="${a.t}">${esc(a.n)}</option>`).join(""); };
+  (window.requestIdleCallback || ((f) => setTimeout(f, 300)))(montarLista);
   if (S.recuperando) return telaLogin(curvaEntrada(), "nova");
   render();
 }
